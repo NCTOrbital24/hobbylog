@@ -45,6 +45,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
 const styles = StyleSheet.create({
     wrapper: {
         backgroundColor: "#FFF8DC",
+        borderColor: "#7393B3",
         borderTopWidth: 1,
         borderLeftWidth: 1,
         borderBottomWidth: 4,
