@@ -30,7 +30,7 @@
 
 ## If you want to run this online:
 ### Install the apk from here: [Milestone 1](https://expo.dev/artifacts/eas/4mxqpzsGZeH2wR9YULjgRj.apk)
-1. Run the app and hope that the server is running.
+1. Install and run the app on your android device/emulator and hope that the server is running.
    
 
 
