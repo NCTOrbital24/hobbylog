@@ -7,8 +7,6 @@ import * as SecureStore from "expo-secure-store";
 import { Redirect } from "expo-router";
 import CallLogin from "./src/functions/CallLogin";
 
-import HomeScreen from "#/screens/HomeScreen/HomeScreen";
-
 export default function Index() {
     const [route, setRoute] = useState(
         <SafeAreaView style={styles.root}>
