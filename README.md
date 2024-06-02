@@ -33,7 +33,7 @@ Ever tell yourself "Alright, this time, I'm going to start a project and stick t
 5. If this didn't work for you please let me know
 
 ## If you want to run this online:
-### Install the apk from here: [Milestone 1](https://expo.dev/artifacts/eas/4mxqpzsGZeH2wR9YULjgRj.apk)
+### Install the apk from here: (Will update when the preview build can be built successfully)
 1. Install and run the app on your android device/emulator and hope that the server is running.
    
 
