@@ -1,8 +1,9 @@
 # HobbyLog
 - yet another hobby tracker project for Orbital
 ## About this project
-Ever tell yourself "alright, this time, I'm going to start a project and stick to it," only to give up the next hour?
-**HobbyLog** is a hobby tracker for the iPad kids, the skibidi sigmas, and the average NUS CS student with a 2 picosecond attention span that aims to make building habits and working on your hobbies fun and interactive. Generate hobbies, set goals and reminders, earn XP and badges, and see what your friends are up to (eventually)!
+Ever tell yourself "Alright, this time, I'm going to start a project and stick to it," only to give up the next hour?
+
+<span style="font-size: larger;">**HobbyLog**</span> is a hobby tracker for the iPad kids, the skibidi sigmas, and the average NUS CS student with a 2 picosecond attention span that aims to make building habits and working on your hobbies fun and interactive. Generate hobbies, set goals and reminders, earn XP and badges, and see what your friends are up to (eventually)!
 
 ## Features
 - **User Authentication:** -  Register and login to your own profile. (Implemented)
