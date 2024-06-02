@@ -17,15 +17,16 @@
 - **MongoDB:** Database used for storing (seemingly) important stuff.
 
 ## Want to try?
-### If you want to run this locally:
+### If you want to run this locally: Note: You need to have NodeJS installed.
 ### This repository contains two folders: 'express', the expressJS server, and 'HobbyLog', the react-native app.
 1. clone the repository with ```bash git clone https://github.com/NCTOrbital24/hobbylog.git ```
 2. Install dependencies:
-   a. Go to ./express ```bash cd ./express ``` and run ```bash npm install``` to install all the dependencies. Start the server with ```node npm run start```
-   b. Go to ./HobbyLog ```bash cd ../HobbyLog ``` (assuming you did step a) and run ```bash npm install``` to install all the dependencies
+   a. Go to ./express ```cd ./express ``` and run ```npm install``` to install all the dependencies. Start the server with ```node npm run start```
+   b. Go to ./HobbyLog ```cd ../HobbyLog ``` (assuming you did step a) and run ```npm install``` to install all the dependencies
 3. This is where things start to get funky. Change **backendLink** in ```./HobbyLog/app/src/constants/constants.js``` to the server's port.
    **It's important to note that emulators may not be able to reach localhost ports. In that case, you will have to forward the port your server is running on.**
-4. Run the app with ```bash npx expo start```
+4. Run the app with ```npx expo start```
+5. If this didn't work for you please let me know
 
 ## If you want to run this online:
 ### Install the apk from here: [Milestone 1](https://expo.dev/artifacts/eas/4mxqpzsGZeH2wR9YULjgRj.apk)
