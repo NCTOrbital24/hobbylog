@@ -5,11 +5,11 @@
 
 ## Features
 - **User Authentication:** -  Register and login to your own profile. (Implemented)
-- **Progress Tracking** - The core feature of the application is the ability to create and customise hobbies, with achievement levels that track one’s progress in a hobby.
-- **Goal Setting** - Set short term and long term goals, as well as weekly/monthly tasks. Set reminders for them and catalog your progress by uploading images.
-- **Shareable hobby templates** - Export and import hobby templates created by other users, allowing you to easily customise and adapt the hobby trackers of others for personal use.
-- **Community features** - The ability to search for other user’s profiles, hobbies, and their progress.
-- **Co-op mode** - Allow users to work on the same hobby together, allowing them to track the progress of others and the goals that they have completed.
+- **Progress Tracking** - The core feature of the application is the ability to create and customise hobbies, with achievement levels that track one’s progress in a hobby. (Planned)
+- **Goal Setting** - Set short term and long term goals, as well as weekly/monthly tasks. Set reminders for them and catalog your progress by uploading images. (Planned)
+- **Shareable hobby templates** - Export and import hobby templates created by other users, allowing you to easily customise and adapt the hobby trackers of others for personal use. (Planned)
+- **Community features** - The ability to search for other user’s profiles, hobbies, and their progress. (Planned)
+- **Co-op mode** - Allow users to work on the same hobby together, allowing them to track the progress of others and the goals that they have completed. (Planned)
 
 ## Tech Stack
 - **React-native:** For front-end development. Written in **JavaScript/TypeScript**.
