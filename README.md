@@ -1,5 +1,6 @@
 # HobbyLog
 - yet another hobby tracker project for Orbital
+- https://docs.google.com/document/d/1kn6f5DI_kcPe4xdSFbr5MbLerr5grkbVOMUIGb4VkJY/edit?usp=sharing
 ## About this project
 Ever tell yourself "Alright, this time, I'm going to start a project and stick to it," only to give up the next hour?
 
