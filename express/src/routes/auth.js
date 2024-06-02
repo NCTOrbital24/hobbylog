@@ -10,19 +10,19 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
 }); 
 
 router.post('/register', async(request, response) => { 
-    const { email } = request.body; 
-    const userDB = await User.findOne({  email }); 
+    const {email} = request.body; 
+    const emailDB = await User.findOne({ email }); 
 
-    if (userDB) { 
+    if (emailDB) { 
+        console.log("email in use");
         response.status(400).send( { msg: 'User already exists!'}); 
-
     } else { 
         const password = hashPassword(request.body.password); 
         console.log(password); 
 
         const username = request.body.username;
 
-        const newUser = User.create({ username, password, email}); 
+        const newUser = User.create({ username, password, email });
         response.send(201);
     }
 }); 
