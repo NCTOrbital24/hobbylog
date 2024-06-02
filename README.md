@@ -1,12 +1,14 @@
 # HobbyLog
 - yet another hobby tracker project for Orbital
 ## About this project
-**HobbyLog** is a hobby tracker that aims to make building habits and working on your hobbies fun and interactive. Generate hobbies, set goals and reminders, and see what your friends are up to (eventually)!
+Ever tell yourself "alright, this time, I'm going to start a project and stick to it," only to give up the next hour?
+**HobbyLog** is a hobby tracker for the iPad kids, the skibidi sigmas, and the average NUS CS student with a 2 picosecond attention span that aims to make building habits and working on your hobbies fun and interactive. Generate hobbies, set goals and reminders, earn XP and badges, and see what your friends are up to (eventually)!
 
 ## Features
 - **User Authentication:** -  Register and login to your own profile. (Implemented)
 - **Progress Tracking** - The core feature of the application is the ability to create and customise hobbies, with achievement levels that track one’s progress in a hobby. (Planned)
 - **Goal Setting** - Set short term and long term goals, as well as weekly/monthly tasks. Set reminders for them and catalog your progress by uploading images. (Planned)
+- **Achievements** - Earn EXP and Achivements as you develop your skills. They don't do anything (and most likely will never), but they're (probably) pretty! (Planned)
 - **Shareable hobby templates** - Export and import hobby templates created by other users, allowing you to easily customise and adapt the hobby trackers of others for personal use. (Planned)
 - **Community features** - The ability to search for other user’s profiles, hobbies, and their progress. (Planned)
 - **Co-op mode** - Allow users to work on the same hobby together, allowing them to track the progress of others and the goals that they have completed. (Planned)
