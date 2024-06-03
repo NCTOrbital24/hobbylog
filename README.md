@@ -4,7 +4,7 @@
 ## About this project
 Ever tell yourself "Alright, this time, I'm going to start a project and stick to it," only to give up the next hour?
 
-<span style="font-size: 48;">**HobbyLog**</span> is a hobby tracker for anyone striving to build consistent and meaningful habits amidst their busy lives.  Generate hobbies, set goals and reminders, earn XP and badges, and see what your friends are up to (eventually)!
+**HobbyLog** is a hobby tracker for anyone striving to build consistent and meaningful habits amidst their busy lives.  Generate hobbies, set goals and reminders, earn XP and badges, and see what your friends are up to (eventually)!
 
 ## Features
 - **User Authentication:** -  Register and login to your own profile. (Implemented)
@@ -27,15 +27,11 @@ Ever tell yourself "Alright, this time, I'm going to start a project and stick t
 2. Install dependencies:
    a. Go to ./express ```cd ./express ``` and run ```npm install``` to install all the dependencies. Start the server with ```node npm run start```
    b. Go to ./HobbyLog ```cd ../HobbyLog ``` (assuming you did step a) and run ```npm install``` to install all the dependencies
-3. This is where things start to get 𝓯𝓻𝓮𝓪𝓴𝔂. Change **backendLink** in ```./HobbyLog/app/src/constants/constants.js``` to the server's port.
-   The server may be up, which in that case, just skip to step 4. You can check if the server is running by opening [this webpage](domain=prepared-perch-dashing.ngrok-free.app). If it says 'OK', the server is running.
+3. **Note:** The server may be up and running, which in that case, just skip to step 4. You can check if the server is running by opening [this webpage](domain=prepared-perch-dashing.ngrok-free.app). If it says 'OK', the server is running.
+   This is where things start to get 𝓯𝓻𝓮𝓪𝓴𝔂. Change **backendLink** in ```./HobbyLog/app/src/constants/constants.js``` to the server's port.
    **It's important to note that emulators may not be able to reach localhost ports. In that case, you will have to forward the port your server is running on.**
-4. Run the app with ```npx expo start```
-5. If this didn't work for you please let me know
+5. Run the app with ```npx expo start```
+6. If this didn't work for you please let me know
 
-## If you want to run this online:
-### Install the apk from here: (Will update when the preview build can be built successfully)
-1. Install and run the app on your android device/emulator and hope that the server is running.
-   
 
 
