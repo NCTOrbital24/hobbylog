@@ -23,9 +23,9 @@ Ever tell yourself "Alright, this time, I'm going to start a project and stick t
 ## Want to try?
 ### If you want to run this locally: Note: You need to have NodeJS installed.
 ### This repository contains two folders: 'express', the expressJS server, and 'HobbyLog', the react-native app.
-1. clone the repository with ```bash git clone https://github.com/NCTOrbital24/hobbylog.git ```
+1. clone the repository with ```git clone https://github.com/NCTOrbital24/hobbylog.git ```
 2. Install dependencies:
-   a. Go to ./express ```cd ./express ``` and run ```npm install``` to install all the dependencies. Start the server with ```node npm run start```
+   a. (If you intend to run the server locally) Go to ./express ```cd ./express ``` and run ```npm install``` to install all the dependencies. Start the server with ```node npm run start```
    b. Go to ./HobbyLog ```cd ../HobbyLog ``` (assuming you did step a) and run ```npm install``` to install all the dependencies
 3. **Note:** The server may be up and running, which in that case, just skip to step 4. You can check if the server is running by opening [this webpage](domain=prepared-perch-dashing.ngrok-free.app). If it says 'OK', the server is running.
 
