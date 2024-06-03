@@ -28,7 +28,9 @@ Ever tell yourself "Alright, this time, I'm going to start a project and stick t
    a. Go to ./express ```cd ./express ``` and run ```npm install``` to install all the dependencies. Start the server with ```node npm run start```
    b. Go to ./HobbyLog ```cd ../HobbyLog ``` (assuming you did step a) and run ```npm install``` to install all the dependencies
 3. **Note:** The server may be up and running, which in that case, just skip to step 4. You can check if the server is running by opening [this webpage](domain=prepared-perch-dashing.ngrok-free.app). If it says 'OK', the server is running.
-   This is where things start to get 𝓯𝓻𝓮𝓪𝓴𝔂. Change **backendLink** in ```./HobbyLog/app/src/constants/constants.js``` to the server's port.
+
+   If the server is not running, you may choose to run the server on your local machine. This is where things may start to get 𝓯𝓻𝓮𝓪𝓴𝔂. Change **backendLink** in ```./HobbyLog/app/src/constants/constants.js``` to the server's address (by default, localhost:3001).
+   
    **It's important to note that emulators may not be able to reach localhost ports. In that case, you will have to forward the port your server is running on.**
 5. Run the app with ```npx expo start```
 6. If this didn't work for you please let me know
