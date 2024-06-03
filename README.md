@@ -37,5 +37,9 @@ Ever tell yourself "Alright, this time, I'm going to start a project and stick t
 4. Run the app with ```npx expo start```
 5. If this didn't work for you please let me know
 
+### STANDALONE APK FOR ANDROID ###
+Link for Milestone 1 [here](https://expo.dev/artifacts/eas/eoW1bB4KwggwFciyaKo89o.apk)
+Just download it on your device/emulator and open it. Note this requires the server to be up and running.
+
 
 
