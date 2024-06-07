@@ -21,10 +21,10 @@ const styles = StyleSheet.create({
         width: '100%',
         borderColor: '#e8e8e8',
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 7,
         paddingHorizontal: 10,
-        paddingVertical: 3,
-        marginBottom: 5,
+        paddingVertical: 7,
+        marginBottom: 7,
     },
     input: {
         fontSize: 16,

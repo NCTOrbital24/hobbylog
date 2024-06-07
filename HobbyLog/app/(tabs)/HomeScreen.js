@@ -9,14 +9,13 @@ import {
     Image,
 } from "react-native";
 import { router } from "expo-router";
-import CustomButton from "#/components/CustomButton";
 import * as SecureStore from "expo-secure-store";
-import Background from "#/assets/images/defaultBackground.png";
-import HobbyCard from "#/components/HobbyCard";
-import CustomClickableImage from "#/components/CustomClickableImage/CustomClickableImage";
+import Background from "@/assets/images/defaultBackground.png";
+import HobbyCard from "@/components/HobbyCard/HobbyCard";
+import CustomClickableImage from "@/components/CustomClickableImage/CustomClickableImage";
 
 //should hobby come from backend?
-import HobbyConstructor from "#/functions/HobbyConstructor";
+import HobbyConstructor from "@/functions/HobbyConstructor";
 
 export default function HomeScreen() {
     const sampleHobby = HobbyConstructor(
@@ -46,25 +45,7 @@ export default function HomeScreen() {
     return (
         <ImageBackground source={Background} style={styles.background}>
             <View style={styles.header}>
-                <CustomClickableImage
-                    size={40}
-                    path={require("#/assets/images/icons/LogoutVector.png")}
-                    onPress={() => {
-                        SecureStore.deleteItemAsync("email");
-                        SecureStore.deleteItemAsync("password");
-                        router.replace(
-                            "#/components/screens/LoginScreen/LoginScreen"
-                        );
-                    }}
-                />
-                <Text style={styles.headerText}>Welcome Home!</Text>
-                <CustomClickableImage
-                    size={40}
-                    path={require("#/assets/images/icons/PlusSignVector.png")}
-                    onPress={() => {
-                        console.log("Coming Soon!");
-                    }}
-                />
+                <Text style={styles.headerText}>Welcome Home, {SecureStore.getItem("username")}!</Text>
             </View>
             <ScrollView
                 showsVerticalScrollIndicator={false}

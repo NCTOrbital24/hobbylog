@@ -8,22 +8,15 @@ import {
     ImageBackground,
     Text,
 } from "react-native";
-import Logo from "#/assets/images/Logo_1.png";
-import CustomInput from "#/components/CustomInput";
-import CustomButton from "#/components/CustomButton";
+import Logo from "@/assets/images/Logo_1.png";
+import CustomInput from "@/components/CustomInput";
+import CustomButton from "@/components/CustomButton";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 
-import CallLogin from '#/functions/CallLogin';
+import CallLogin from "@/functions/CallLogin";
 
-import Background from "#/assets/images/defaultBackground.png";
-
-/*
-    TODO: AUTO-LOGIN IF PREVIOUSLY LOGGED IN
-    const savedEmail = SecureStore.getItemAsync("email");
-    const savedPassword = SecureStore.getItemAsync("password");
-
-*/
+import Background from "@/assets/images/defaultBackground.png";
 
 export default function LoginScreen({ registrationSuccess = false }) {
     const [email, setEmail] = useState("");
@@ -33,24 +26,32 @@ export default function LoginScreen({ registrationSuccess = false }) {
     const [passwordTooShort, displayShortPasswordWarning] = useState(false);
     const [loginFail, displayLoginFail] = useState(false);
 
-    const onSignInPressed = () => {
+    const onSignInPressed = async () => {
         displayLoginFail(false);
         const response = CallLogin(email, password);
-        response.then((response) => {
-            if (response.status === 200) {
-                SecureStore.setItemAsync("email", email);
-                SecureStore.setItemAsync("password", password);
-                router.replace("../HomeScreen/HomeScreen");
-            } else {
+        response
+            .then(async (response) => {
+                if (response.status === 200) {
+                    const data = await response.json();
+                    SecureStore.setItemAsync("email", email);
+                    SecureStore.setItemAsync("password", password);
+                    //ping server for username and get it
+                    SecureStore.setItemAsync("username", data.username);
+                    router.replace("../(tabs)/HomeScreen");
+                } else {
+                    displayLoginFail(true);
+                }
+            })
+            .catch((error) => {
+                console.log("Login failed", error);
                 displayLoginFail(true);
-            }
-        });
+            });
     };
     const onForgotPasswordPressed = () => {
-        router.replace("../ForgotPasswordScreen/ForgotPasswordScreen");
+        router.replace("/ForgotPasswordScreen");
     };
     const onSignUpPressed = () => {
-        router.replace("../SignUpScreen/SignUpScreen");
+        router.replace("/SignUpScreen");
     };
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -58,12 +59,12 @@ export default function LoginScreen({ registrationSuccess = false }) {
                 source={Background}
                 style={[styles.bgImage, { width: width }, { height: height }]}
             >
-                <View style={[styles.root, { width: width * 0.7 }]}>
+                <View style={[styles.root, { width: width * 0.9 }]}>
                     <Image
                         source={Logo}
                         style={[
                             styles.logo,
-                            { height: height * 0.3 },
+                            { height: width * 0.7 },
                             { width: width * 0.7 },
                         ]}
                         resizeMode="contain"
@@ -141,8 +142,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     logo: {
-        maxWidth: 300,
-        maxHeight: 200,
+        resizeMode: "cover",
     },
     warning: {},
 });

@@ -8,10 +8,17 @@ import { Redirect } from "expo-router";
 import CallLogin from "./src/functions/CallLogin";
 
 export default function Index() {
+    /*
     const [route, setRoute] = useState(
         <SafeAreaView style={styles.root}>
             <Text>Loading...</Text>
         </SafeAreaView>
+    );
+    const goLogin = () => setRoute(
+        <Redirect href="/src/screens/LoginScreen/LoginScreen" />
+    );
+    const goRegister = () => setRoute(
+        <Redirect href="/src/screens/HomeScreen/HomeScreen" />
     );
     useEffect(() => {
         async function checkLogin() {
@@ -19,14 +26,12 @@ export default function Index() {
                 const email = await SecureStore.getItemAsync("email");
                 const password = await SecureStore.getItemAsync("password");
                 const response = await CallLogin(email, password);
-                if (response.status === 200) {
-                    setRoute(
-                        <Redirect href="/src/screens/HomeScreen/HomeScreen" />
-                    );
+                if (response == undefined) {
+                    goLogin();
+                } else if (response.status === 200) {
+                    goRegister();
                 } else {
-                    setRoute(
-                        <Redirect href="/src/screens/LoginScreen/LoginScreen" />
-                    );
+                    goLogin();
                 }
             } else {
                 setRoute(
@@ -37,6 +42,8 @@ export default function Index() {
         checkLogin();
     }, []);
     return route;
+    */
+    return <Redirect href="/(tabs)/HomeScreen" />;
 }
 
 const styles = StyleSheet.create({

@@ -7,6 +7,12 @@ const UserSchema = new mongoose.Schema({
         required: true, 
         unique: true,
     }, 
+
+    username: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+        unique: false,
+    },
     
     password: { 
         type: mongoose.SchemaTypes.String, 

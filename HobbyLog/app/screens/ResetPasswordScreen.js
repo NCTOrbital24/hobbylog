@@ -21,7 +21,7 @@ export default function ResetPasswordScreen() {
     };
 
     const onSignInPressed = () => {
-        router.navigate("../LoginScreen/LoginScreen");
+        router.navigate("/LoginScreen");
     };
 
     return (

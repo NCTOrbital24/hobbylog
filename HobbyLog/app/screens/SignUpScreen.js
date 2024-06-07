@@ -7,12 +7,11 @@ import {
     useWindowDimensions,
     ImageBackground,
 } from "react-native";
-import CustomInput from "#/components/CustomInput";
-import CustomButton from "#/components/CustomButton";
+import CustomInput from "@/components/CustomInput";
+import CustomButton from "@/components/CustomButton";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-import { backendLink } from "#/constants/constants";
-import Background from "#/assets/images/defaultBackground.png";
+import { backendLink } from "@/constants/constants";
+import Background from "@/assets/images/defaultBackground.png";
 
 const signUpLink = backendLink + "/api/auth/register";
 
@@ -70,7 +69,7 @@ export default function SignUpScreen() {
                         displayEmailAlreadyTaken(true);
                 } else if (response.status === 201) {
                     router.replace({
-                        pathname: "../LoginScreen/LoginScreen",
+                        pathname: "/LoginScreen",
                         params: { registrationSuccess: true },
                     });
                 }
@@ -80,7 +79,7 @@ export default function SignUpScreen() {
     const onTermsOfUsedPressed = () => {};
     const onPrivacyPolicyPressed = () => {};
     const onSignInPressed = () => {
-        router.navigate("../LoginScreen/LoginScreen");
+        router.navigate("/LoginScreen");
     };
     return (
         <ScrollView showsVerticalScrollIndicator={false}>

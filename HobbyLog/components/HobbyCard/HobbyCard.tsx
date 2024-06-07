@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
 } from "react-native";
 import Collapsible from "react-native-collapsible";
-import { Hobby } from "../functions/HobbyConstructor";
+import { Hobby } from "../../functions/HobbyConstructor";
 
 export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     return (
@@ -45,11 +45,6 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
 const styles = StyleSheet.create({
     wrapper: {
         backgroundColor: "#FFF8DC",
-        borderColor: "#7393B3",
-        borderTopWidth: 1,
-        borderLeftWidth: 1,
-        borderBottomWidth: 4,
-        borderRightWidth: 4,
         flexDirection: "row",
         justifyContent: "space-between",
         marginBottom: "5%",
@@ -80,7 +75,7 @@ const progressBar = StyleSheet.create({
         width: "90%",
         marginBottom: 2,
         marginTop: 3,
-        borderRadius: 3,
+        borderRadius: 3,    
     },
     progress: {
         backgroundColor: "#673147",
