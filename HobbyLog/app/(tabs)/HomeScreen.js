@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -18,6 +18,13 @@ import CustomClickableImage from "@/components/CustomClickableImage/CustomClicka
 import HobbyConstructor from "@/functions/HobbyConstructor";
 
 export default function HomeScreen() {
+    const [username, setUsername] = useState(null);
+    const storedUsername = SecureStore.getItem("username");
+    //rabz kebabz solution to ensure that the username displayed on the Home Screen is accurate.
+    //tried using setEffect but caused username not to update on logout.
+    if (storedUsername !== username) {
+        setUsername(storedUsername);
+    }
     const sampleHobby = HobbyConstructor(
         "0",
         "Crochet",
@@ -45,7 +52,7 @@ export default function HomeScreen() {
     return (
         <ImageBackground source={Background} style={styles.background}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>Welcome Home, {SecureStore.getItem("username")}!</Text>
+                <Text style={styles.headerText}>Welcome Home, {username}!</Text>
             </View>
             <ScrollView
                 showsVerticalScrollIndicator={false}

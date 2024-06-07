@@ -2,10 +2,11 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { Link } from "expo-router";
-import { backendLink } from "./src/constants/constants";
+import { backendLink } from "../constants/constants";
 import * as SecureStore from "expo-secure-store";
 import { Redirect } from "expo-router";
-import CallLogin from "./src/functions/CallLogin";
+import CallLogin from "../functions/CallLogin";
+import { StrictMode } from "react";
 
 export default function Index() {
     /*
@@ -43,7 +44,11 @@ export default function Index() {
     }, []);
     return route;
     */
-    return <Redirect href="/(tabs)/HomeScreen" />;
+    return (
+        <StrictMode>
+            <Redirect href="/screens/LoginScreen" />
+        </StrictMode>
+    );
 }
 
 const styles = StyleSheet.create({

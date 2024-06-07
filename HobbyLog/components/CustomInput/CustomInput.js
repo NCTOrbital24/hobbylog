@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TextInput } from 'react-native';
 import { StyleSheet } from 'react-native';
 
-export default function CustomInput({value, setValue, placeholder, isSecure}) {
+export default function CustomInput({value, setValue, placeholder, isSecure, maxLength}) {
     return (
         <View style={styles.container}>
             <TextInput
@@ -10,7 +10,9 @@ export default function CustomInput({value, setValue, placeholder, isSecure}) {
                 onChangeText={setValue}
                 placeholder={placeholder}
                 style={styles.input}
-                secureTextEntry={isSecure}/>
+                secureTextEntry={isSecure}
+                maxLength = {maxLength}
+            />
         </View>
     )
 };

@@ -6,7 +6,7 @@ const router = Router();
 
 router.post('/login', passport.authenticate('local'), (req, res) => { 
     console.log(req.body.email + ' Logged In'); 
-    res.sendStatus(200).json({ username: req.body.username });
+    res.json({ username: req.user.username });
 }); 
 
 

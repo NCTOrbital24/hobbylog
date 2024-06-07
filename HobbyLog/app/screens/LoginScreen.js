@@ -31,14 +31,17 @@ export default function LoginScreen({ registrationSuccess = false }) {
         const response = CallLogin(email, password);
         response
             .then(async (response) => {
-                if (response.status === 200) {
-                    const data = await response.json();
+                const data = await response.json();
+                if (response.ok && data.username) {
                     SecureStore.setItemAsync("email", email);
                     SecureStore.setItemAsync("password", password);
                     //ping server for username and get it
                     SecureStore.setItemAsync("username", data.username);
+                    router.dismissAll();
                     router.replace("../(tabs)/HomeScreen");
                 } else {
+                    console.log(response.ok);
+                    console.log(data.username);
                     displayLoginFail(true);
                 }
             })
@@ -48,10 +51,10 @@ export default function LoginScreen({ registrationSuccess = false }) {
             });
     };
     const onForgotPasswordPressed = () => {
-        router.replace("/ForgotPasswordScreen");
+        router.replace("./ForgotPasswordScreen");
     };
     const onSignUpPressed = () => {
-        router.replace("/SignUpScreen");
+        router.replace("./SignUpScreen");
     };
     return (
         <ScrollView showsVerticalScrollIndicator={false}>

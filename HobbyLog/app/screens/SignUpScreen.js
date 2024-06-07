@@ -66,10 +66,10 @@ export default function SignUpScreen() {
             });
             response.then((response) => {
                 if (response.status === 400) {
-                        displayEmailAlreadyTaken(true);
+                    displayEmailAlreadyTaken(true);
                 } else if (response.status === 201) {
                     router.replace({
-                        pathname: "/LoginScreen",
+                        pathname: "./LoginScreen",
                         params: { registrationSuccess: true },
                     });
                 }
@@ -79,84 +79,97 @@ export default function SignUpScreen() {
     const onTermsOfUsedPressed = () => {};
     const onPrivacyPolicyPressed = () => {};
     const onSignInPressed = () => {
-        router.navigate("/LoginScreen");
+        router.navigate("./LoginScreen");
     };
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
-            <ImageBackground source={Background}
-                style={[styles.bgImage, { width: width }, { height: height }]}>
-            <View style={[styles.root, { width: width * 0.7 }]}>
-                <Text style={styles.title}>Create an account</Text>
-                <CustomInput
-                    placeholder={"Username"}
-                    value={username}
-                    setValue={setUsername}
-                />
-                <CustomInput
-                    placeholder={"Email"}
-                    value={email}
-                    setValue={setEmail}
-                />
-                <CustomInput
-                    placeholder={"Password"}
-                    value={password}
-                    setValue={setPassword}
-                    isSecure={true}
-                />
-                <CustomInput
-                    placeholder={"Confirm Password"}
-                    value={passwordRepeat}
-                    setValue={setPasswordRepeat}
-                    isSecure={true}
-                />
+            <ImageBackground
+                source={Background}
+                style={[styles.bgImage, { width: width }, { height: height }]}
+            >
+                <View style={[styles.root, { width: width * 0.7 }]}>
+                    <Text style={styles.title}>Create an account</Text>
+                    <CustomInput
+                        placeholder={"Username"}
+                        value={username}
+                        setValue={setUsername}
+                        maxLength={16}
+                    />
+                    <CustomInput
+                        placeholder={"Email"}
+                        value={email}
+                        setValue={setEmail}
+                    />
+                    <CustomInput
+                        placeholder={"Password"}
+                        value={password}
+                        setValue={setPassword}
+                        isSecure={true}
+                        maxLength={32}
+                    />
+                    <CustomInput
+                        placeholder={"Confirm Password"}
+                        value={passwordRepeat}
+                        setValue={setPasswordRepeat}
+                        isSecure={true}
+                        maxLength={32}
+                    />
 
-                <CustomButton text="Register" onPress={onRegisterPressed} />
+                    <CustomButton text="Register" onPress={onRegisterPressed} />
 
-                <View>
-                    {usernameNotFilled && (
-                        <Text style={styles.warning}>
-                            Please fill in a username!
-                        </Text>
-                    )}
-                    {emailNotFilled && (
-                        <Text style={styles.warning}>
-                            Please fill in an email!
-                        </Text>
-                    )}
-                    {passwordTooShort && (
-                        <Text style={styles.warning}>
-                            Password should be longer!
-                        </Text>
-                    )}
-                    {emailAlreadyTaken && (
-                        <Text style={styles.warning}>Email Already Taken!</Text>
-                    )}
-                    {passwordMismatch && (
-                        <Text style={styles.warning}>
-                            Passwords do not match!
-                        </Text>
-                    )}
-                </View>
+                    <View>
+                        {usernameNotFilled && (
+                            <Text style={styles.warning}>
+                                Please fill in a username!
+                            </Text>
+                        )}
+                        {emailNotFilled && (
+                            <Text style={styles.warning}>
+                                Please fill in an email!
+                            </Text>
+                        )}
+                        {passwordTooShort && (
+                            <Text style={styles.warning}>
+                                Password should be longer!
+                            </Text>
+                        )}
+                        {emailAlreadyTaken && (
+                            <Text style={styles.warning}>
+                                Email Already Taken!
+                            </Text>
+                        )}
+                        {passwordMismatch && (
+                            <Text style={styles.warning}>
+                                Passwords do not match!
+                            </Text>
+                        )}
+                    </View>
 
-                <Text style={styles.text}>
-                    By registering, you accept our{" "}
-                    <Text style={styles.link} onPress={onTermsOfUsedPressed}>
-                        Terms of Use
-                    </Text>{" "}
-                    and{" "}
-                    <Text style={styles.link} onPress={onPrivacyPolicyPressed}>
-                        Privacy Policy
+                    <Text style={styles.text}>
+                        By registering, you accept our{" "}
+                        <Text
+                            style={styles.link}
+                            onPress={onTermsOfUsedPressed}
+                        >
+                            Terms of Use
+                        </Text>{" "}
+                        and{" "}
+                        <Text
+                            style={styles.link}
+                            onPress={onPrivacyPolicyPressed}
+                        >
+                            Privacy Policy
+                        </Text>
+                        .
                     </Text>
-                    .
-                </Text>
 
-                <CustomButton
-                    text="Have an account? Sign in"
-                    onPress={onSignInPressed}
-                    type="TERTIARY"
-                />
+                    <CustomButton
+                        text="Have an account? Sign in"
+                        onPress={onSignInPressed}
+                        type="TERTIARY"
+                    />
                 </View>
-                </ImageBackground>
+            </ImageBackground>
         </ScrollView>
     );
 }
