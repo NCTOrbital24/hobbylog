@@ -1,6 +1,10 @@
+// Contains the hobby type and constructor. It's here to facilitate type safety later when creating hobbies
+// and shuttling them between front and back.
+// HobbyConstructor offers a clean, easy way to create Hobby objects.
+
 export interface Hobby {
-    uid: string;
-    name: string;
+    uid: string; //should be unique for each Hobby. Two users are embarking on the same hobby if they have the same uid.
+    name: string; // can be repeated.
     description: string;
     totalTasks: number;
     tasksCompleted: number;
