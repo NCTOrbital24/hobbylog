@@ -26,6 +26,12 @@ API Testing: API testing was performed using Postman to validate the correctness
 User Testing: User testing was conducted to gather feedback from actual users and improve the usability and functionality of HobbyLog. Through observation and direct feedback sessions, we gathered valuable insights into how users perceived and used the app. This feedback highlighted areas of the application that needed refinement, such as user interface design, navigation flow, and feature intuitiveness. By incorporating this feedback into our development process, we were able to make iterative improvements that significantly enhanced the overall user experience.
 By conducting these thorough and systematic testing processes, we ensured that HobbyLog was not only functional and reliable but also user-friendly and robust, ready to provide a seamless experience to its users.
 
+## SWE Practices
+Agile Development: Allow for flexible and iterative development, encouraging frequent assessment and adaptation of processes.
+
+Code Reviews: Regular code reviews to maintain code quality.
+
+Version Control with Git: Protect the main branch with strict rules, develop new features in separate branches, regularly commit and push changes, and merge through pull requests after peer reviews.
 ## Tech Stack
 - **React-native:** For front-end development. Written in **JavaScript/TypeScript**.
 - **ExpressJS:** For back-end development, used to build a RESTful API with **NodeJS**.
