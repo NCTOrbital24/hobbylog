@@ -1,6 +1,6 @@
 const passport = require('passport');
 const { Strategy } = require('passport-local');
-const User = require('../database/Schemas/User');
+const User = require('../database/schemas/User');
 const { comparePassword } = require('../utils/helpers'); 
 
 passport.serializeUser((user, done) => { 

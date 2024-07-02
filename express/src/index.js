@@ -9,6 +9,7 @@ require("./strategies/local");
 
 const authRoute = require("./routes/auth");
 const userProfileRoute = require("./routes/userProfile");
+const hobbyRoute = require("./routes/hobby");
 
 require("./database");
 
@@ -40,15 +41,12 @@ app.get("", (req, res) => {
     res.sendStatus(200);
 });
 
-app.get("/test", (req, res) => {
-    res.send("Server is running");
-});
-
 
 app.use('/uploads', express.static('uploads'));
 
 
 app.use("/api/auth", authRoute);
 app.use("/api/profile", userProfileRoute);
+app.use("/api/hobby", hobbyRoute);
 
 app.listen(PORT, () => console.log(`Running Express Server on Port ${PORT}!`));
