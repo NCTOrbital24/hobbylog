@@ -4,9 +4,11 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
+const fs = require('fs');
 require("./strategies/local");
 
 const authRoute = require("./routes/auth");
+const userProfileRoute = require("./routes/userProfile");
 
 require("./database");
 
@@ -35,10 +37,18 @@ app.use(passport.session());
 
 app.get("", (req, res) => {
     console.log("pong!");
-    res.send(200);
+    res.sendStatus(200);
 });
 
-//register routes
+app.get("/test", (req, res) => {
+    res.send("Server is running");
+});
+
+
+app.use('/uploads', express.static('uploads'));
+
+
 app.use("/api/auth", authRoute);
+app.use("/api/profile", userProfileRoute);
 
 app.listen(PORT, () => console.log(`Running Express Server on Port ${PORT}!`));

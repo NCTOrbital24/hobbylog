@@ -46,7 +46,7 @@ export default function Index() {
     */
     return (
         <StrictMode>
-            <Redirect href="/screens/LoginScreen" />
+            <Redirect href="/(tabs)/UserProfile" />
         </StrictMode>
     );
 }
