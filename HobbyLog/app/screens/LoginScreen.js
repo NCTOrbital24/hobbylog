@@ -37,6 +37,7 @@ export default function LoginScreen({ registrationSuccess = false }) {
                     SecureStore.setItemAsync("password", password);
                     //ping server for username and get it
                     SecureStore.setItemAsync("username", data.username);
+                    SecureStore.setItemAsync("id", data.id);
                     router.dismissAll();
                     router.replace("../(tabs)/HomeScreen");
                 } else {

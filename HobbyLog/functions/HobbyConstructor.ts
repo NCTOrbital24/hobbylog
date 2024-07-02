@@ -2,35 +2,39 @@
 // and shuttling them between front and back.
 // HobbyConstructor offers a clean, easy way to create Hobby objects.
 
+import { Goal } from "./GoalConstructor";
+import { Task } from "./TaskConstructor";
 export interface Hobby {
     uid: string; //should be unique for each Hobby. Two users are embarking on the same hobby if they have the same uid.
     name: string; // can be repeated.
     description: string;
-    totalTasks: number;
-    tasksCompleted: number;
+    totalGoals: number;
+    goalsCompleted: number;
     icon: string; //replace local storage with database link when possible
-    deadlines: Array<any>; //will fill in after deadline
+    goals: Array<Goal>; //will fill in after deadline
     //array has been created in milestone 2
+    tasks: Array<Task>
 }
 
 export default function HobbyConstructor(
     uid: string,
     name: string,
     description: string,
-    totalTasks: number,
-    tasksCompleted: number,
+    goalsCompleted: number,
     icon: string,
-    deadlines = []
+    goals: Array<Goal>,
+    tasks: Array<Task>,
 ): Hobby {
-    if (totalTasks >= tasksCompleted) {
+    if (goals.length >= goalsCompleted) {
         return {
             uid: uid,
             name: name,
             description: description,
-            totalTasks: totalTasks,
-            tasksCompleted: tasksCompleted,
+            totalGoals: goals.length,
+            goalsCompleted: goalsCompleted,
             icon: icon,
-            deadlines: deadlines,
+            goals: goals,
+            tasks: tasks,
         };
     } else {
         throw Error;

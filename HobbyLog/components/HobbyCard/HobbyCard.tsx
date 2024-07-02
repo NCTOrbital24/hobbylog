@@ -19,20 +19,20 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
 
             <View style={styles.body}>
                 <View style={progressBar.container}>
-                    <View
-                        style={[
-                            progressBar.progress,
-                            {
-                                width: `${
-                                    (hobby.tasksCompleted / hobby.totalTasks) *
-                                    100
-                                }%`,
-                            },
-                        ]}
-                    ></View>
+                    {hobby.goals.length !== 0 ?
+                        <View
+                            style={[
+                                progressBar.progress,
+                                {
+                                    width: `${(hobby.goalsCompleted / hobby.totalGoals) *
+                                        100
+                                        }%`,
+                                },
+                            ]}
+                        ></View> : <View></View>}
                 </View>
                 <Text style={progressBar.text}>
-                    {hobby.tasksCompleted} out of {hobby.totalTasks}
+                    {hobby.goalsCompleted} out of {hobby.totalGoals}
                 </Text>
 
                 <Text style={styles.nameText}>{hobby.name}</Text>

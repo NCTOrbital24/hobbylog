@@ -17,7 +17,7 @@ export default function Index() {
     const goLogin = () => setRoute(
         <Redirect href="/screens/LoginScreen" />
     );
-    const goRegister = () => setRoute(
+    const goHome = () => setRoute(
         <Redirect href="/(tabs)/HomeScreen" />
     );
     useEffect(() => {
@@ -29,7 +29,7 @@ export default function Index() {
                 if (response == undefined) {
                     goLogin();
                 } else if (response.status === 200) {
-                    goRegister();
+                    goHome();
                 } else {
                     goLogin();
                 }

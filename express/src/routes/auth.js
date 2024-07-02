@@ -8,7 +8,7 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
     console.log(req.body.email + " Logged In");
     res.json({
         username: req.user.username,
-        _id: req.user._id,
+        id: req.user._id,
     });
 });
 
