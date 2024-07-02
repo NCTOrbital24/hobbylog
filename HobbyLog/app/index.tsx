@@ -1,12 +1,10 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import { Link } from "expo-router";
-import { backendLink } from "../constants/constants";
-import * as SecureStore from "expo-secure-store";
 import { Redirect } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import CallLogin from "../functions/CallLogin";
-import { StrictMode } from "react";
+import PushNotification from 'react-native-push-notification';
+import AddGoal from '../components/HobbyCard/AddGoal';
 
 export default function Index() {
     const [route, setRoute] = useState(
@@ -14,15 +12,13 @@ export default function Index() {
             <Text>Loading...</Text>
         </SafeAreaView>
     );
-    const goLogin = () => setRoute(
-        <Redirect href="/screens/LoginScreen" />
-    );
-    const goRegister = () => setRoute(
-        <Redirect href="/(tabs)/HomeScreen" />
-    );
+
+    const goLogin = () => setRoute(<Redirect href="/screens/LoginScreen" />);
+    const goRegister = () => setRoute(<Redirect href="/(tabs)/HomeScreen" />);
+
     useEffect(() => {
         async function checkLogin() {
-            if (SecureStore.getItem("password")) {
+            if (await SecureStore.getItemAsync("password")) {
                 const email = await SecureStore.getItemAsync("email");
                 const password = await SecureStore.getItemAsync("password");
                 const response = await CallLogin(email, password);
@@ -34,13 +30,18 @@ export default function Index() {
                     goLogin();
                 }
             } else {
-                setRoute(
-                    <Redirect href="/screens/LoginScreen" />
-                );
+                setRoute(<Redirect href="/screens/LoginScreen" />);
             }
         }
         checkLogin();
+
+        PushNotification.configure({
+            onNotification: function (notification) {
+                console.log("NOTIFICATION:", notification);
+            },
+        });
     }, []);
+
     return route;
 }
 

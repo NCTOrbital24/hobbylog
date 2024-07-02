@@ -7,6 +7,7 @@ const goalSchema = new Schema({
     hobbyId: { type: Schema.Types.ObjectId, ref: 'Hobby', required: true },
     deadline: { type: Date, required: true },
     //badge: { type: Schema.Types.ObjectId, ref: 'Badge'}
+    reminderSent: { type: Boolean, default: false },
 });
 
 const Goal = mongoose.model('goal', goalSchema);
