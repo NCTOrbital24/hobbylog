@@ -1,9 +1,23 @@
-import { FontAwesome } from "@expo/vector-icons";
+import {
+    FontAwesome,
+    Octicons,
+    Feather,
+    AntDesign,
+    FontAwesome6,
+} from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { StyleSheet } from "react-native";
+import Animated, {useSharedValue, useAnimatedStyle, withTiming} from 'react-native-reanimated'
 
 export default function TabLayout() {
     return (
-        <Tabs screenOptions={{ tabBarActiveTintColor: "#FFFDD0" }}>
+        <Tabs
+            screenOptions={{
+                tabBarStyle: styles.tabBar,
+                tabBarActiveTintColor: "#3c3c3c",
+                headerShown: false,
+            }}
+        >
             <Tabs.Screen
                 name="HomeScreen"
                 options={{
@@ -12,17 +26,59 @@ export default function TabLayout() {
                     tabBarIcon: ({ color }) => (
                         <FontAwesome size={28} name="home" color={color} />
                     ),
+                    
                 }}
             />
             <Tabs.Screen
-                name="settings"
+                name="HobbyScreen"
                 options={{
-                    title: "Settings",
+                    href: "/HobbyScreen",
+                    title: "Hobbies",
                     tabBarIcon: ({ color }) => (
-                        <FontAwesome size={28} name="cog" color={color} />
+                        <AntDesign name="smileo" size={24} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="CreateHobbyScreen"
+                options={{
+                    href: "/CreateHobbyScreen",
+                    title: "Create",
+                    tabBarIcon: ({ color }) => (
+                        <Feather name="plus" size={28} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="CommunityScreen"
+                options={{
+                    href: "/CommunityScreen",
+                    title: "Community",
+                    tabBarIcon: ({ color }) => (
+                        <FontAwesome6
+                            name="people-pulling"
+                            size={28}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="UserProfile"
+                options={{
+                    href: "/UserProfile",
+                    title: "User",
+                    tabBarIcon: ({ color }) => (
+                        <Octicons size={28} name="person" color={color} />
                     ),
                 }}
             />
         </Tabs>
     );
 }
+
+const styles = StyleSheet.create({
+    tabBar: {
+        backgroundColor: "#FFFDD0",
+    },
+});

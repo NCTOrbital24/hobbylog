@@ -9,17 +9,16 @@ import CallLogin from "../functions/CallLogin";
 import { StrictMode } from "react";
 
 export default function Index() {
-    /*
     const [route, setRoute] = useState(
         <SafeAreaView style={styles.root}>
             <Text>Loading...</Text>
         </SafeAreaView>
     );
     const goLogin = () => setRoute(
-        <Redirect href="/src/screens/LoginScreen/LoginScreen" />
+        <Redirect href="/screens/LoginScreen" />
     );
     const goRegister = () => setRoute(
-        <Redirect href="/src/screens/HomeScreen/HomeScreen" />
+        <Redirect href="/(tabs)/HomeScreen" />
     );
     useEffect(() => {
         async function checkLogin() {
@@ -36,19 +35,13 @@ export default function Index() {
                 }
             } else {
                 setRoute(
-                    <Redirect href="/src/screens/LoginScreen/LoginScreen" />
+                    <Redirect href="/screens/LoginScreen" />
                 );
             }
         }
         checkLogin();
     }, []);
     return route;
-    */
-    return (
-        <StrictMode>
-            <Redirect href="/screens/LoginScreen" />
-        </StrictMode>
-    );
 }
 
 const styles = StyleSheet.create({

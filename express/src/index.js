@@ -7,6 +7,7 @@ const passport = require("passport");
 require("./strategies/local");
 
 const authRoute = require("./routes/auth");
+const hobbyRoute = require("./routes/hobby");
 
 require("./database");
 
@@ -35,10 +36,11 @@ app.use(passport.session());
 
 app.get("", (req, res) => {
     console.log("pong!");
-    res.send(200);
+    res.sendStatus(200);
 });
 
 //register routes
 app.use("/api/auth", authRoute);
+app.use("/api/hobby", hobbyRoute);
 
 app.listen(PORT, () => console.log(`Running Express Server on Port ${PORT}!`));
