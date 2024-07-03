@@ -13,6 +13,9 @@ import HobbyCard from "@/components/HobbyCard/HobbyCard";
 
 //should hobby come from backend?
 import HobbyConstructor from "@/functions/HobbyConstructor";
+import GoalConstructor from "@/functions/GoalConstructor";
+
+//const sampleHobby = HobbyConstructor()
 
 export default function HomeScreen() {
     const [username, setUsername] = useState(null);
@@ -50,7 +53,7 @@ const styles = StyleSheet.create({
     header: {
         width: "100%",
         height: "10%",
-        marginTop: 20,
+        marginTop: 40,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",

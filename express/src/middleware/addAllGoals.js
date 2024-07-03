@@ -6,6 +6,9 @@ const addAllGoals = async (req, res, next) => {
     const hobbyId = req.params.hobbyId;
     const goals = req.body.goals;
 
+    console.log(hobbyId);
+    console.log(goals);
+
     try {
         await checkOwnership(req, res, async () => {
             const hobby = await Hobby.findById(hobbyId);
@@ -16,7 +19,7 @@ const addAllGoals = async (req, res, next) => {
 
             const savedGoals = [];
             for (const goalData of goals) {
-                const newGoal = new Goal(goalData);
+                const newGoal = new Goal({ ...goalData, hobbyId: hobby._id });
                 const savedGoal = await newGoal.save();
                 savedGoals.push(savedGoal._id);
             }
@@ -25,7 +28,7 @@ const addAllGoals = async (req, res, next) => {
 
             await hobby.save();
 
-            res.sendStatus(200).json({
+            res.status(200).json({
                 message: "All goals added to Hobby successfully",
             });
         });

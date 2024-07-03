@@ -12,8 +12,8 @@ export const uploadProfile = async (profileData) => {
       const fileType = uriParts[uriParts.length - 1];
       formData.append('profileImage', {
         uri: profileData.profileImage,
-        name: photo.${fileType},
-        type: image/${fileType},
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
       });
     }
 

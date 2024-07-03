@@ -113,9 +113,9 @@ router.get("/hobby", isAuthenticated, async (req, res) => {
     }
 })
 
-router.post("/:hobby/goals/addAll", isAuthenticated, addAllGoals);
+router.post("/:hobbyId/goals/addAll", isAuthenticated, addAllGoals);
 
-router.post("/:hobby/tasks/addAll", isAuthenticated, addAllTasks);
+router.post("/:hobbyId/tasks/addAll", isAuthenticated, addAllTasks);
 
 router.post("/create", isAuthenticated, async (req, res) => {
     const { hobbyName, hobbyDescription, goals, tasks } = req.body;
