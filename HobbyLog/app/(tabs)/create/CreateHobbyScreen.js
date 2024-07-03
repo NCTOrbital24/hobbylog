@@ -15,7 +15,7 @@ import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import Background from "@/assets/images/defaultBackground.png";
 import { Picker } from "@react-native-picker/picker";
-import { backendLink } from "../../constants/constants";
+import { backendLink } from "../../../constants/constants";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 const createLink = backendLink + "/api/hobby/create";

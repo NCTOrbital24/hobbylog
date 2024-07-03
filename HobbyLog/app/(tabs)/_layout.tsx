@@ -41,7 +41,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="CreateHobbyScreen"
                 options={{
-                    href: "/CreateHobbyScreen",
+                    href: "/create/CreateHobbyScreen",
                     title: "Create",
                     tabBarIcon: ({ color }) => (
                         <Feather name="plus" size={28} color={color} />
