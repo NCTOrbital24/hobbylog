@@ -12,11 +12,14 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import Background from "@/assets/images/defaultBackground.png";
-import AddGoalModal from "../../components/HobbyCreation/AddGoalModal";
-import AddTaskModal from "../../components/HobbyCreation/AddTaskModal";
+import AddGoalModal from "@/components/HobbyCreation/AddGoalModal";
+import AddTaskModal from "@/components/HobbyCreation/AddTaskModal";
 import { AntDesign } from '@expo/vector-icons';
 
+import { backendLink } from "@/constants/constants";
+
 export default function CreateHobbyScreen() {
+    const createLink = backendLink + "/api/hobby/create";
     const router = useRouter();
     const [goals, setGoals] = useState([]);
     const [tasks, setTasks] = useState([]);
@@ -76,7 +79,7 @@ export default function CreateHobbyScreen() {
                 throw new Error("Failed to add hobby");
             }
 
-            // Clear state or navigate to another screen upon success
+            //clear state
             setHobby({
                 name: "",
                 description: "",
@@ -86,11 +89,8 @@ export default function CreateHobbyScreen() {
             setGoals([]);
             setTasks([]);
 
-            // Handle navigation or any other action upon successful submission
-            // For example, navigate to a different screen; // Replace with your desired navigation logic
         } catch (error) {
             console.error("Error adding hobby:", error);
-            // Handle error logic here (e.g., display error message)
         }
     };
 

@@ -10,7 +10,7 @@ const hobbySchema = new Schema({
     tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
 });
 
-const Hobby = mongoose.model("hobby", hobbySchema);
+const Hobby = mongoose.model("Hobby", hobbySchema);
 
 hobbySchema.pre("remove", async function (next) {
     try {

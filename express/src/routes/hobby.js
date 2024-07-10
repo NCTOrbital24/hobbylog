@@ -13,12 +13,40 @@ const removeOneGoal = require("../middleware/removeOneGoal");
 const removeOneTask = require("../middleware/removeOneTask");
 const router = Router();
 
+router.post("/clear", isAuthenticated, async (req, res) => {
+    const { userId } = req.body;
+
+    if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+    }
+
+    try {
+        const user = await User.findById(userId).populate("hobbies");
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        await Hobby.deleteMany({ _id: { $in: user.hobbies } });
+
+        user.hobbies = [];
+        await user.save();
+
+        res.status(200).json({ message: "All hobbies have been cleared" });
+    } catch (err) {
+        console.error("Error clearing hobbies:", err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
 router.delete(
     "/:hobbyId/goals/removeAll",
     isAuthenticated,
     removeAllGoals,
     async (req, res) => {
-        res.status(200).json({ message: "Hobby deleted successfully" });
+        res.status(200).json({
+            message: "All goals deleted from Hobby successfully",
+        });
     }
 );
 
@@ -28,7 +56,7 @@ router.delete(
     removeAllTasks,
     async (req, res) => {
         res.sendStatus(200).json({
-            message: "All goals deleted from Hobby successfully",
+            message: "All tasks deleted from Hobby successfully",
         });
     }
 );
@@ -53,7 +81,7 @@ router.delete(
             message: "Task deleted from Hobby successfully",
         });
     }
-)
+);
 
 router.delete(
     "/:hobbyId/remove",
@@ -95,15 +123,17 @@ router.delete(
     }
 );
 
-router.get("/hobby", isAuthenticated, async (req, res) => {
+router.post("/get", isAuthenticated, async (req, res) => {
     const userId = req.body.userId;
 
     try {
-        const user = await User.findById(userId).populate('hobbies');
+        const user = await User.findById(userId).populate({
+            path: "hobbies",
+            populate: [{ path: "goals" }, { path: "tasks" }],
+        });
 
         if (!user) {
             return res.status(404).json({ message: "user not found" });
-    
         }
 
         res.status(200).json(user.hobbies);
@@ -111,7 +141,7 @@ router.get("/hobby", isAuthenticated, async (req, res) => {
         console.error("Error fetching user hobbies", err);
         res.status(500).json({ message: "Server Error" });
     }
-})
+});
 
 router.post("/:hobbyId/goals/addAll", isAuthenticated, addAllGoals);
 
@@ -122,9 +152,12 @@ router.post("/create", isAuthenticated, async (req, res) => {
 
     try {
         const user = req.user;
+        console.log("user");
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+
+        console.log("creating new hobby");
 
         const goalList = [];
         const taskList = [];
@@ -173,5 +206,111 @@ router.post("/create", isAuthenticated, async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
+
+router.get("/:hobbyId/get", isAuthenticated, async (req, res) => {
+    const hobbyId = req.params.hobbyId;
+
+    try {
+        const hobby = await Hobby.findById(hobbyId)
+            .populate("goals")
+            .populate("tasks");
+
+        if (!hobby) {
+            return res.status(404).json({ message: "Hobby not found" });
+        }
+
+        // Check if the hobby belongs to the authenticated user
+        const user = req.user;
+        if (!user.hobbies.includes(hobbyId.toString())) {
+            return res.status(403).json({ message: "Unauthorized to access this hobby" });
+        }
+
+        res.status(200).json(hobby);
+    } catch (err) {
+        console.error("Error fetching hobby:", err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+router.put("/:hobbyId/update", isAuthenticated, async (req, res) => {
+    const hobbyId = req.params.hobbyId;
+    const { name, description, goals, tasks } = req.body;
+
+    try {
+        // Find the hobby by ID
+        const hobby = await Hobby.findById(hobbyId);
+
+        if (!hobby) {
+            return res.status(404).json({ message: "Hobby not found" });
+        }
+
+        // Check if the authenticated user owns this hobby
+        const user = req.user;
+        if (hobby.user.toString() !== user._id.toString()) {
+            return res.status(403).json({ message: "Unauthorized to update this hobby" });
+        }
+
+        // Update hobby fields
+        hobby.name = name;
+        hobby.description = description;
+
+        // Update or add goals
+        const updatedGoals = await Promise.all(
+            goals.map(async (goalData) => {
+                let goal;
+
+                if (goalData._id) {
+                    // If goal has an ID, update existing goal
+                    goal = await Goal.findByIdAndUpdate(goalData._id, goalData, { new: true });
+                } else {
+                    // If goal doesn't have an ID, create a new goal
+                    goal = new Goal({ ...goalData, hobbyId: hobby._id });
+                    await goal.save();
+                    hobby.goals.push(goal._id);
+                }
+
+                return goal;
+            })
+        );
+
+        // Remove goals that were deleted
+        hobby.goals = hobby.goals.filter((goalId) =>
+            updatedGoals.find((goal) => goal._id.equals(goalId))
+        );
+
+        // Update or add tasks
+        const updatedTasks = await Promise.all(
+            tasks.map(async (taskData) => {
+                let task;
+
+                if (taskData._id) {
+                    // If task has an ID, update existing task
+                    task = await Task.findByIdAndUpdate(taskData._id, taskData, { new: true });
+                } else {
+                    // If task doesn't have an ID, create a new task
+                    task = new Task({ ...taskData, hobbyId: hobby._id });
+                    await task.save();
+                    hobby.tasks.push(task._id);
+                }
+
+                return task;
+            })
+        );
+
+        // Remove tasks that were deleted
+        hobby.tasks = hobby.tasks.filter((taskId) =>
+            updatedTasks.find((task) => task._id.equals(taskId))
+        );
+
+        // Save updated hobby
+        await hobby.save();
+
+        res.status(200).json({ hobby });
+    } catch (err) {
+        console.error("Error updating hobby:", err);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
 
 module.exports = router; //export router

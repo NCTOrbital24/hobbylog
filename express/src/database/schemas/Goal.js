@@ -9,6 +9,6 @@ const goalSchema = new Schema({
     //badge: { type: Schema.Types.ObjectId, ref: 'Badge'}
 });
 
-const Goal = mongoose.model('goal', goalSchema);
+const Goal = mongoose.model('Goal', goalSchema);
 
 module.exports = Goal;
