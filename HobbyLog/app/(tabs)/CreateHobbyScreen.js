@@ -91,6 +91,8 @@ export default function CreateHobbyScreen() {
 
         } catch (error) {
             console.error("Error adding hobby:", error);
+        } finally {
+            router.navigate("HomeScreen");
         }
     };
 

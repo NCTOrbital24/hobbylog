@@ -111,16 +111,20 @@ export default function AddGoalModal({
                             mode="date"
                             display="default"
                             onChange={(event, selectedDate) => {
-                                const currentDate =
-                                    selectedDate || editedGoal.deadline;
-                                setDate(currentDate);
-                                setEditedGoal((prevGoal) => ({
-                                    ...prevGoal,
-                                    deadline: currentDate,
-                                }));
-                                setDateConfirmed(true);
-                                showError(false);
-                                setOpen(false);
+                                if (event.type === 'set') {
+                                    const currentDate =
+                                        selectedDate || editedGoal.deadline;
+                                    setDate(currentDate);
+                                    setEditedGoal((prevGoal) => ({
+                                        ...prevGoal,
+                                        deadline: currentDate,
+                                    }));
+                                    setDateConfirmed(true);
+                                    showError(false);
+                                    setOpen(false);
+                                } else {
+                                    setOpen(false);
+                                }
                             }}
                         />
                     )}

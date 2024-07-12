@@ -15,6 +15,8 @@ export interface Hobby {
     tasks: Array<Task>
 }
 
+export const EMPTY_HOBBY = HobbyConstructor("", "", "", 0, "", [], []);
+
 export default function HobbyConstructor(
     _id: string,
     name: string,

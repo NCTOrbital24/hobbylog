@@ -6,6 +6,7 @@ const goalSchema = new Schema({
     description: { type: String, required: true },
     hobbyId: { type: Schema.Types.ObjectId, ref: 'Hobby', required: true },
     deadline: { type: Date, required: true },
+    completed: {type: Boolean, required: true, default: false}
     //badge: { type: Schema.Types.ObjectId, ref: 'Badge'}
 });
 

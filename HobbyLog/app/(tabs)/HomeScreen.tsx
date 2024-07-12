@@ -13,7 +13,6 @@ import HobbyCard from "@/components/HobbyCard/HobbyCard";
 import { useFocusEffect } from "expo-router";
 import fetchHobbies from "@/functions/FetchHobbies";
 
-
 export default function HomeScreen() {
     const [username, setUsername] = useState(null);
     const storedUsername = SecureStore.getItem("username");
@@ -46,7 +45,7 @@ export default function HomeScreen() {
         };
 
         getStoredUsername();
-        runFetchHobbies(); 
+        runFetchHobbies();
     }, []);
 
     useFocusEffect(
@@ -56,19 +55,19 @@ export default function HomeScreen() {
     );
 
     const renderHobbyCard = ({ item }) => <HobbyCard hobby={item} />;
-    
-    
+
     if (hobbies.length === 0) {
         return (
-            <View
-                style={{
-                    height: "100%",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                <Text> No Hobbies. Click on create to make some!</Text>
-            </View>
+            <ImageBackground source={Background} style={styles.background}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>
+                        Welcome Home, {username}!
+                    </Text>
+                </View>
+                <View style={styles.root}>
+                    <Text> No Hobbies. Click on create to make some!</Text>
+                </View>
+            </ImageBackground>
         );
     } else {
         return loading ? (

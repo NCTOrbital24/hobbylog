@@ -178,6 +178,7 @@ router.post("/create", isAuthenticated, async (req, res) => {
                 description: goalData.description,
                 deadline: goalData.deadline,
                 hobbyId: savedHobby._id,
+                completed: false,
             });
 
             const savedGoal = await newGoal.save();
@@ -233,7 +234,7 @@ router.get("/:hobbyId/get", isAuthenticated, async (req, res) => {
 });
 
 router.put("/:hobbyId/update", isAuthenticated, async (req, res) => {
-    const hobbyId = req.params.hobbyId;
+    const hobbyId = req.params.hobbyId; 
     const { name, description, goals, tasks } = req.body;
 
     try {
@@ -304,6 +305,8 @@ router.put("/:hobbyId/update", isAuthenticated, async (req, res) => {
 
         // Save updated hobby
         await hobby.save();
+
+        console.log("UPDATING SUCCESSFUL!");
 
         res.status(200).json({ hobby });
     } catch (err) {

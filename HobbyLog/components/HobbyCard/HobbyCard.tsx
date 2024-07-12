@@ -12,6 +12,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Collapsible from "react-native-collapsible";
 import { Hobby } from "../../functions/HobbyConstructor";
 import { useRouter } from "expo-router";
+import Checkbox from "../Checkbox";
 
 export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     const router = useRouter();
@@ -19,8 +20,11 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     const navigateToTask = (index) => {};
     const hobbyId = hobby._id;
 
-    const [goalList, showGoalList] = useState(false);
-    const [taskList, showTaskList] = useState(false);
+    const [goalList, showGoalList] = useState(true);
+    const [taskList, showTaskList] = useState(true);
+    const [checkbox, setCheckbox] = useState<Array<boolean>>(
+        new Array(hobby.goals.length).fill(false)
+    );
 
     const goals = hobby.goals;
     const tasks = hobby.tasks;
@@ -32,6 +36,18 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
             goalsCompleted++;
         }
     }
+
+    const setCheckboxAtIndex = (index, value) => {
+        const updatedCheckbox = [...checkbox];
+        updatedCheckbox[index] = value;
+        setCheckbox(updatedCheckbox);
+    };
+
+    console.log(checkbox);
+
+    const toggleGoalList = () => {
+        showGoalList((prev) => !prev); // Toggle goalList state independently
+    };
 
     return (
         <View style={styles.wrapper}>
@@ -84,7 +100,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
             <View style={styles.body}>
                 <View style={styles.listContainer}>
                     <TouchableOpacity
-                        onPress={() => showGoalList(!goalList)}
+                        onPress={toggleGoalList}
                         style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
@@ -104,38 +120,49 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                         <AntDesign name="caretdown" size={12} color="black" />
                     </TouchableOpacity>
                     <Collapsible collapsed={goalList}>
-                        {goals.length > 0 ? (
-                            <FlatList
-                                style={styles.list}
-                                data={goals}
-                                renderItem={({ item, index }) => (
-                                    <TouchableOpacity
-                                        onPress={() => navigateToGoal(index)}
-                                    >
-                                        <View style={styles.card}>
-                                            <Text
-                                                style={{
+                        <FlatList
+                            style={styles.list}
+                            data={goals}
+                            renderItem={({ item, index }) => (
+                                <View style={styles.card}>
+                                    <Checkbox
+                                        value={checkbox[index]}
+                                        onValueChange={(value) =>
+                                            setCheckboxAtIndex(index, !value)
+                                        }
+                                        size={18}
+                                        color={"black"}
+                                        style={styles.checkbox}
+                                    />
+                                    <View style={{ flex: 1, paddingLeft: 8 }}>
+                                        <Text
+                                            style={[
+                                                {
                                                     fontSize: 18,
                                                     marginBottom: 1,
-                                                }}
-                                            >
-                                                •{" " + item.name}
-                                            </Text>
-                                            <Text>{item.description}</Text>
-                                            <Text>
-                                                Deadline:{" "}
-                                                {item.deadline.toLocaleDateString()}
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                )}
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                        ) : (
-                            <Text style={{ color: "grey" }}>
-                                No goals yet. Add a new goal!
-                            </Text>
-                        )}
+                                                },
+                                                checkbox[index]
+                                                    ? {
+                                                          textDecorationLine:
+                                                              "line-through",
+                                                      }
+                                                    : null,
+                                            ]}
+                                        >
+                                            {item.name}
+                                        </Text>
+                                        <Text>{item.description}</Text>
+                                        <Text>
+                                            Deadline:{" "}
+                                            {new Date(
+                                                item.deadline
+                                            ).toLocaleDateString()}
+                                        </Text>
+                                    </View>
+                                </View>
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
                     </Collapsible>
                 </View>
 
@@ -195,7 +222,9 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                                 keyExtractor={(item, index) => index.toString()}
                             />
                         ) : (
-                            <Text>No tasks yet. Add a new task!</Text>
+                            <Text style={{ color: "grey" }}>
+                                No tasks yet. Add a new task!
+                            </Text>
                         )}
                     </Collapsible>
                 </View>
@@ -233,9 +262,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffd1dc",
         color: "#141414",
         borderRadius: 8,
-        paddingHorizontal: 8,
+        paddingHorizontal: 10,
         paddingVertical: 5,
         marginBottom: 7,
+        flexDirection: "row",
     },
     wrapper: {
         backgroundColor: "#FFF8DC",
@@ -259,6 +289,9 @@ const styles = StyleSheet.create({
     nameText: {
         fontSize: 20,
         fontWeight: "bold",
+    },
+    checkbox: {
+        paddingTop: 4,
     },
 });
 
@@ -294,7 +327,6 @@ const image = StyleSheet.create({
         height: 80,
         width: 80,
         borderRadius: 40,
-        resizeMode: "contain",
-        backgroundColor: "grey",
+        resizeMode: "cover",
     },
 });
