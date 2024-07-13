@@ -68,6 +68,31 @@ export default function SignUpScreen() {
                 if (response.status === 400) {
                     displayEmailAlreadyTaken(true);
                 } else if (response.status === 201) {
+                    const loginResponse = CallLogin(email, password);
+                    loginResponse
+                        .then(async (response) => {
+                            const data = await response.json();
+                            if (response.ok && data.username) {
+                                SecureStore.setItemAsync("email", email);
+                                SecureStore.setItemAsync("password", password);
+                                //ping server for username and get it
+                                SecureStore.setItemAsync(
+                                    "username",
+                                    data.username
+                                );
+                                SecureStore.setItemAsync("id", data.id);
+                                router.dismissAll();
+                                router.replace("../(tabs)/HomeScreen");
+                            } else {
+                                console.log(response.ok);
+                                console.log(data.username);
+                                displayLoginFail(true);
+                            }
+                        })
+                        .catch((error) => {
+                            console.log("Login failed", error);
+                            displayLoginFail(true);
+                        });
                     router.replace({
                         pathname: "./LoginScreen",
                         params: { registrationSuccess: true },

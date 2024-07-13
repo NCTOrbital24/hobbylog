@@ -7,20 +7,38 @@ export default function Checkbox({
     onValueChange,
     style,
     size,
-    color,
+    color = "black",
+    pressable = false,
 }: {
     value: boolean;
     onValueChange: any;
     style: any;
     size: number;
     color: string;
-    }) {
-    return (
-        <TouchableOpacity onPress={() => onValueChange(value)} style={style}>
-            {!value ?
-                (<Feather name="circle" size={size} color={color} />) :
-                (<Feather name="check-circle" size={size} color={color} />)}
-        </TouchableOpacity>
-    );
+    pressable: boolean;
+}) {
+    if (pressable) {
+        return (
+            <TouchableOpacity
+                onPress={() => onValueChange(value)}
+                style={style}
+            >
+                {!value ? (
+                    <Feather name="circle" size={size} color={color} />
+                ) : (
+                    <Feather name="check-circle" size={size} color={color} />
+                )}
+            </TouchableOpacity>
+        );
+    } else {
+        return (
+            <View style={style}>
+                {!value ? (
+                    <Feather name="circle" size={size} color={color} />
+                ) : (
+                    <Feather name="check-circle" size={size} color={color} />
+                )}
+            </View>
+        );
+    }
 }
-

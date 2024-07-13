@@ -8,11 +8,10 @@ import {
     TouchableOpacity,
     FlatList,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import Collapsible from "react-native-collapsible";
 import { Hobby } from "../../functions/HobbyConstructor";
 import { useRouter } from "expo-router";
 import Checkbox from "../Checkbox";
+import { backendLink } from "@/constants/constants";
 
 export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     const router = useRouter();
@@ -20,15 +19,12 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     const navigateToTask = (index) => {};
     const hobbyId = hobby._id;
 
-    const [goalList, showGoalList] = useState(true);
-    const [taskList, showTaskList] = useState(true);
-    const [checkbox, setCheckbox] = useState<Array<boolean>>(
-        new Array(hobby.goals.length).fill(false)
-    );
-
     const goals = hobby.goals;
     const tasks = hobby.tasks;
     let goalsCompleted = 0;
+    const checkboxArray = [...goals].map((goal) => goal.completed);
+
+    const [checkbox, setCheckbox] = useState<Array<boolean>>(checkboxArray);
 
     for (let i = 0; i < goals.length; i++) {
         const goal = goals[i];
@@ -37,16 +33,40 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
         }
     }
 
-    const setCheckboxAtIndex = (index, value) => {
-        const updatedCheckbox = [...checkbox];
-        updatedCheckbox[index] = value;
-        setCheckbox(updatedCheckbox);
-    };
+    const handleGoalChecked = (value, index) => {
+        const newCheckbox = [...checkbox];
+        newCheckbox[index] = !value;
+        const goalId = goals[index]._id;
+        const markGoalAsCompleted = async (
+            goalId: string,
+            complete: boolean
+        ) => {
+            try {
+                const response = await fetch(
+                    `${backendLink}/api/hobby/${goalId}/${
+                        complete ? "markIncomplete" : "markComplete"
+                    }`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
 
-    console.log(checkbox);
+                if (!response.ok) {
+                    throw new Error("Failed to complete goal");
+                }
 
-    const toggleGoalList = () => {
-        showGoalList((prev) => !prev); // Toggle goalList state independently
+                goals[index].completed = !goals[index].completed;
+                setCheckbox(newCheckbox);
+
+                //const data = await response.json();
+            } catch (err) {
+                console.error("Error completing goal", err);
+            }
+        };
+        markGoalAsCompleted(goalId, goals[index].completed);
     };
 
     return (
@@ -81,6 +101,11 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                                                 100
                                             }%`,
                                         },
+                                        goalsCompleted === hobby.goals.length
+                                            ? {
+                                                  backgroundColor: "#673147",
+                                              }
+                                            : { backgroundColor: "#DE3163", },
                                     ]}
                                 ></View>
                             ) : (
@@ -99,8 +124,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
 
             <View style={styles.body}>
                 <View style={styles.listContainer}>
-                    <TouchableOpacity
-                        onPress={toggleGoalList}
+                    <View
                         style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
@@ -116,59 +140,55 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                         >
                             Goals:
                         </Text>
-
-                        <AntDesign name="caretdown" size={12} color="black" />
-                    </TouchableOpacity>
-                    <Collapsible collapsed={goalList}>
-                        <FlatList
-                            style={styles.list}
-                            data={goals}
-                            renderItem={({ item, index }) => (
-                                <View style={styles.card}>
-                                    <Checkbox
-                                        value={checkbox[index]}
-                                        onValueChange={(value) =>
-                                            setCheckboxAtIndex(index, !value)
-                                        }
-                                        size={18}
-                                        color={"black"}
-                                        style={styles.checkbox}
-                                    />
-                                    <View style={{ flex: 1, paddingLeft: 8 }}>
-                                        <Text
-                                            style={[
-                                                {
-                                                    fontSize: 18,
-                                                    marginBottom: 1,
-                                                },
-                                                checkbox[index]
-                                                    ? {
-                                                          textDecorationLine:
-                                                              "line-through",
-                                                      }
-                                                    : null,
-                                            ]}
-                                        >
-                                            {item.name}
-                                        </Text>
-                                        <Text>{item.description}</Text>
-                                        <Text>
-                                            Deadline:{" "}
-                                            {new Date(
-                                                item.deadline
-                                            ).toLocaleDateString()}
-                                        </Text>
-                                    </View>
+                    </View>
+                    <FlatList
+                        style={styles.list}
+                        data={goals}
+                        renderItem={({ item, index }) => (
+                            <View style={styles.card}>
+                                <Checkbox
+                                    value={checkbox[index]}
+                                    onValueChange={(value) => {
+                                        handleGoalChecked(value, index);
+                                    }}
+                                    size={18}
+                                    color={"black"}
+                                    style={styles.checkbox}
+                                    pressable={true}
+                                />
+                                <View style={{ flex: 1, paddingLeft: 8 }}>
+                                    <Text
+                                        style={[
+                                            {
+                                                fontSize: 18,
+                                                marginBottom: 1,
+                                            },
+                                            checkbox[index]
+                                                ? {
+                                                      textDecorationLine:
+                                                          "line-through",
+                                                  }
+                                                : null,
+                                        ]}
+                                    >
+                                        {item.name}
+                                    </Text>
+                                    <Text>{item.description}</Text>
+                                    <Text>
+                                        Deadline:{" "}
+                                        {new Date(
+                                            item.deadline
+                                        ).toLocaleDateString()}
+                                    </Text>
                                 </View>
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                        />
-                    </Collapsible>
+                            </View>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
                 </View>
 
                 <View style={styles.listContainer}>
-                    <TouchableOpacity
-                        onPress={() => showTaskList(!taskList)}
+                    <View
                         style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
@@ -184,49 +204,43 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                         >
                             Tasks:
                         </Text>
-
-                        <AntDesign name="caretdown" size={12} color="black" />
-                    </TouchableOpacity>
-                    <Collapsible collapsed={taskList}>
-                        {tasks.length > 0 ? (
-                            <FlatList
-                                style={styles.list}
-                                data={tasks}
-                                renderItem={({ item, index }) => (
-                                    <TouchableOpacity
-                                        onPress={() => navigateToTask(index)}
+                    </View>
+                    {tasks.length > 0 ? (
+                        <FlatList
+                            style={styles.list}
+                            data={tasks}
+                            renderItem={({ item, index }) => (
+                                <TouchableOpacity
+                                    onPress={() => navigateToTask(index)}
+                                >
+                                    <View
+                                        style={{
+                                            marginBottom: 10,
+                                            padding: 10,
+                                            backgroundColor: "#F2E6FF",
+                                            borderRadius: 5,
+                                        }}
                                     >
-                                        <View
+                                        <Text
                                             style={{
-                                                marginBottom: 10,
-                                                padding: 10,
-                                                backgroundColor: "#F2E6FF",
-                                                borderRadius: 5,
+                                                fontSize: 18,
+                                                marginBottom: 5,
                                             }}
                                         >
-                                            <Text
-                                                style={{
-                                                    fontSize: 18,
-                                                    marginBottom: 5,
-                                                }}
-                                            >
-                                                •{" " + item.name}
-                                            </Text>
-                                            <Text>{item.description}</Text>
-                                            <Text>
-                                                Frequency: {item.frequency}
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                )}
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                        ) : (
-                            <Text style={{ color: "grey" }}>
-                                No tasks yet. Add a new task!
-                            </Text>
-                        )}
-                    </Collapsible>
+                                            •{" " + item.name}
+                                        </Text>
+                                        <Text>{item.description}</Text>
+                                        <Text>Frequency: {item.frequency}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                    ) : (
+                        <Text style={{ color: "grey" }}>
+                            No tasks yet. Add a new task!
+                        </Text>
+                    )}
                 </View>
             </View>
         </View>
@@ -305,7 +319,7 @@ const progressBar = StyleSheet.create({
         borderRadius: 3,
     },
     progress: {
-        backgroundColor: "#673147",
+        
         height: 10,
         borderRadius: 3,
     },

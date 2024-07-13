@@ -15,6 +15,7 @@ import Background from "@/assets/images/defaultBackground.png";
 import AddGoalModal from "@/components/HobbyCreation/AddGoalModal";
 import AddTaskModal from "@/components/HobbyCreation/AddTaskModal";
 import { AntDesign } from '@expo/vector-icons';
+import sortGoalsByDeadline from "@/functions/sortGoalsByDeadline";
 
 import { backendLink } from "@/constants/constants";
 
@@ -59,10 +60,11 @@ export default function CreateHobbyScreen() {
     });
 
     const handleSubmitHobby = async () => {
+        const newGoals = sortGoalsByDeadline(goals);
         const data = {
             hobbyName: hobby.name,
             hobbyDescription: hobby.description,
-            goals: goals,
+            goals: newGoals,
             tasks: tasks,
         };
 

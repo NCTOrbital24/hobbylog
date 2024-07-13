@@ -16,7 +16,7 @@ import AddTaskModal from "@/components/HobbyCreation/AddTaskModal";
 import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { Hobby, EMPTY_HOBBY } from "@/functions/HobbyConstructor";
 import { AntDesign } from "@expo/vector-icons";
-import Collapsible from "react-native-collapsible";
+import sortGoalsByDeadline from "@/functions/sortGoalsByDeadline";
 
 import { backendLink } from "@/constants/constants";
 import parseHobby from "@/functions/ParseHobby";
@@ -103,23 +103,25 @@ export default function EditHobbyPage() {
     };
 
     const updateHobby = async () => {
+        const newHobby = {
+            ...updatedHobby,
+            goals: sortGoalsByDeadline(updatedHobby.goals)
+        }
+        setUpdatedHobby(newHobby);
         try {
             const response = await fetch(updateLink, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(updatedHobby),
+                body: JSON.stringify(newHobby),
             });
             if (!response.ok) {
                 throw new Error("Failed to update hobby, error code: " + response.status);
             }
 
             const updatedHobbyData = await response.json();
-            const parsedHobby = parseHobby(updatedHobbyData);
-
-            setHobby(parsedHobby);
-            setUpdatedHobby(parsedHobby);
+            setHobby(newHobby);
 
         } catch (err) {
             console.error("Error updating hobby:", err);
