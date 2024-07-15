@@ -30,7 +30,9 @@ const userSchema = new mongoose.Schema({
             ref: "Hobby"
         }],
         default: [],
-    }
+    },
+    exp: {type: Number, required: true, default: 0},
+    level: {type: Number, required: true, default: 1}
 });
 
 const User = mongoose.model("User", userSchema);

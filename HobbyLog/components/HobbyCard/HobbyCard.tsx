@@ -43,7 +43,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
         ) => {
             try {
                 const response = await fetch(
-                    `${backendLink}/api/hobby/${goalId}/${
+                    `${backendLink}/api/goal/${goalId}/${
                         complete ? "markIncomplete" : "markComplete"
                     }`,
                     {

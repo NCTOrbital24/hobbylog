@@ -43,6 +43,7 @@ export default function CreateHobbyScreen() {
         description: "",
         deadline: new Date(),
         completed: false,
+        exp: 0,
     });
     const [newTask, setNewTask] = useState({
         name: "",
@@ -107,6 +108,7 @@ export default function CreateHobbyScreen() {
                 description: "",
                 deadline: new Date(),
                 completed: false,
+                exp: 0,
             });
             handleInputChange("goals", updatedGoals);
         }

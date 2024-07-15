@@ -6,16 +6,19 @@ import {
     StyleSheet,
     useWindowDimensions,
     ImageBackground,
+    Modal,
+    TouchableOpacity,
 } from "react-native";
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
 import { router } from "expo-router";
 import { backendLink } from "@/constants/constants";
 import Background from "@/assets/images/defaultBackground.png";
-
-const signUpLink = backendLink + "/api/auth/register";
+import CallLogin from "@/functions/CallLogin";
+import * as SecureStore from "expo-secure-store";
 
 export default function SignUpScreen() {
+    const signUpLink = backendLink + "/api/auth/register";
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -25,6 +28,7 @@ export default function SignUpScreen() {
     const [passwordTooShort, displayShortPasswordWarning] = useState(false);
     const [passwordMismatch, displayPasswordMismatch] = useState(false);
     const [emailAlreadyTaken, displayEmailAlreadyTaken] = useState(false);
+    //const [succModal, showSuccModal] = useState(false);
     const { width, height } = useWindowDimensions();
     function clearAllWarnings() {
         displayEmailAlreadyTaken(false);
@@ -64,38 +68,26 @@ export default function SignUpScreen() {
                     error
                 );
             });
+
             response.then((response) => {
                 if (response.status === 400) {
                     displayEmailAlreadyTaken(true);
                 } else if (response.status === 201) {
                     const loginResponse = CallLogin(email, password);
-                    loginResponse
-                        .then(async (response) => {
-                            const data = await response.json();
-                            if (response.ok && data.username) {
-                                SecureStore.setItemAsync("email", email);
-                                SecureStore.setItemAsync("password", password);
-                                //ping server for username and get it
-                                SecureStore.setItemAsync(
-                                    "username",
-                                    data.username
-                                );
-                                SecureStore.setItemAsync("id", data.id);
-                                router.dismissAll();
-                                router.replace("../(tabs)/HomeScreen");
-                            } else {
-                                console.log(response.ok);
-                                console.log(data.username);
-                                displayLoginFail(true);
-                            }
-                        })
-                        .catch((error) => {
-                            console.log("Login failed", error);
-                            displayLoginFail(true);
-                        });
-                    router.replace({
-                        pathname: "./LoginScreen",
-                        params: { registrationSuccess: true },
+                    loginResponse.then(async (response) => {
+                        const data = await response.json();
+                        if (response.ok && data.username) {
+                            SecureStore.setItemAsync("email", email);
+                            SecureStore.setItemAsync("password", password);
+                            //ping server for username and get it
+                            SecureStore.setItemAsync("username", data.username);
+                            SecureStore.setItemAsync("id", data.id);
+                            router.dismissAll();
+                            router.replace("../(tabs)/HomeScreen");
+                        } else {
+                            console.log(response.ok);
+                            console.log(data.username);
+                        }
                     });
                 }
             });
@@ -194,6 +186,53 @@ export default function SignUpScreen() {
                         type="TERTIARY"
                     />
                 </View>
+                {/*
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={succModal}
+                    onRequestClose={() =>
+                        router.replace({
+                            pathname: "./LoginScreen",
+                            params: { registrationSuccess: true },
+                        })
+                    }
+                >
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        }}
+                    >
+                        <View
+                            style={{
+                                width: "80%",
+                                height: "20%",
+                                backgroundColor: "#FFFDD0",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                borderRadius: 25,
+                            }}
+                        >
+                            <TouchableOpacity
+                                onPress={() =>
+                                    router.replace({
+                                        pathname: "./LoginScreen",
+                                        params: { registrationSuccess: true },
+                                    })
+                                }
+                            >
+                                <Text style={{color: "black", fontWeight: "bold"}}>
+                                    Registration Sucessful! Click to go
+                                    back!
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+                */}
             </ImageBackground>
         </ScrollView>
     );

@@ -1,9 +1,7 @@
-
 import { backendLink } from "@/constants/constants";
 import parseHobby from "./ParseHobby";
 
-
-    const hobbyLink = backendLink + "/api/hobby/get";
+const hobbyLink = backendLink + "/api/hobby/get";
 
 export default async function fetchHobbies(setHobbies, userId) {
     const response = await fetch(hobbyLink, {

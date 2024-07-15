@@ -144,82 +144,7 @@ router.post("/get", isAuthenticated, async (req, res) => {
     }
 });
 
-//toggles a goal as completed if it's your goal
-router.put("/:goalId/markComplete", isAuthenticated, async (req, res) => {
-    const goalId = req.params.goalId;
 
-    try {
-        const goal = await Goal.findById(goalId);
-
-        if (!goal) {
-            return res.status(404).json({ message: "goal could not be found" });
-        }
-
-        const hobby = await Hobby.findById(goal.hobbyId);
-
-        if (!hobby) {
-            return res.status(404).json({ message: "goal does not belong to a hobby" });
-        }
-
-        const user = req.user;
-        if (hobby.user.toString() !== user._id.toString()) {
-            return res.status(403).json({ message: "User unauthorised to update this goal" });
-        }
-
-        if (goal.completed) {
-            return res.status(400).json({ message: "Goal is already complete" });
-        }
-
-        goal.completed = true;
-
-        //PUT EXP STUFF HERE
-
-        await goal.save();
-
-        res.status(200).json({ message: "Goal marked as completed", goal });
-    } catch (err) {
-        console.log("Error marking goal as complete", err);
-        res.status(500).json({ message: "Server Error" });
-    }
-});
-
-router.put("/:goalId/markIncomplete", isAuthenticated, async (req, res) => {
-    const goalId = req.params.goalId;
-
-    try {
-        const goal = await Goal.findById(goalId);
-
-        if (!goal) {
-            return res.status(404).json({ message: "goal could not be found" });
-        }
-
-        const hobby = await Hobby.findById(goal.hobbyId);
-
-        if (!hobby) {
-            return res.status(404).json({ message: "goal does not belong to a hobby" });
-        }
-
-        const user = req.user;
-        if (hobby.user.toString() !== user._id.toString()) {
-            return res.status(403).json({ message: "User unauthorised to update this goal" });
-        }
-
-        if (!goal.completed) {
-            return res.status(400).json({ message: "Goal is already incomplete" });
-        }
-
-        goal.completed = false;
-
-        //PUT EXP STUFF HERE
-
-        await goal.save();
-
-        res.status(200).json({ message: "Goal marked as not completed", goal });
-    } catch (err) {
-        console.log("Error marking goal as incomplete", err);
-        res.status(500).json({ message: "Server Error" });
-    }
-});
 
 router.post("/:hobbyId/goals/addAll", isAuthenticated, addAllGoals);
 
@@ -257,6 +182,7 @@ router.post("/create", isAuthenticated, async (req, res) => {
                 deadline: goalData.deadline,
                 hobbyId: savedHobby._id,
                 completed: false,
+                exp: goalData.exp,
             });
 
             const savedGoal = await newGoal.save();

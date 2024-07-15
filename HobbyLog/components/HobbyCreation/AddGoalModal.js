@@ -40,7 +40,11 @@ export default function AddGoalModal({
     }
 
     function checkValidGoal() {
-        return editedGoal.name && editedGoal.name !== "" && isValidDate(editedGoal.deadline);
+        return (
+            editedGoal.name &&
+            editedGoal.name !== "" &&
+            isValidDate(editedGoal.deadline)
+        );
     }
 
     const saveGoal = () => {
@@ -111,7 +115,7 @@ export default function AddGoalModal({
                             mode="date"
                             display="default"
                             onChange={(event, selectedDate) => {
-                                if (event.type === 'set') {
+                                if (event.type === "set") {
                                     const currentDate =
                                         selectedDate || editedGoal.deadline;
                                     setDate(currentDate);
@@ -128,6 +132,12 @@ export default function AddGoalModal({
                             }}
                         />
                     )}
+                    <TextInput
+                        value={editedGoal.expf}
+                        onChangeText={(text) => handleInputChange("exp", (Number(text)))}
+                        placeholder="Exp reward"
+                        keyboardType="numeric"
+                    />
                     {error && <Text>Invalid Goal!</Text>}
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
@@ -147,8 +157,7 @@ export default function AddGoalModal({
                             onPress={() => {
                                 showError(false);
                                 closeModal();
-                            }
-                            }
+                            }}
                         >
                             <Text style={styles.buttonText}>Close</Text>
                         </TouchableOpacity>
@@ -178,7 +187,7 @@ const styles = StyleSheet.create({
         width: "80%",
         fontSize: 20,
         color: "black",
-        textAlign: "center"
+        textAlign: "center",
     },
     deadlineText: {
         fontSize: 20,
