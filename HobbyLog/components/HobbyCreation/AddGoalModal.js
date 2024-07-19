@@ -135,6 +135,7 @@ export default function AddGoalModal({
                     <TextInput
                         value={editedGoal.expf}
                         onChangeText={(text) => handleInputChange("exp", (Number(text)))}
+                        style={styles.input}
                         placeholder="Exp reward"
                         keyboardType="numeric"
                     />

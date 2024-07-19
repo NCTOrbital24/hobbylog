@@ -77,6 +77,8 @@ export default function AddTaskModal({
                             handleInputChange("description", text)
                         }
                     />
+                    <View style={{ flexDirection: "row", alignItems: "center", }}>
+                        <Text style={styles.freqText}>Repeat</Text>
                     <Picker
                         selectedValue={selectedFrequency}
                         onValueChange={(itemValue) => {
@@ -103,7 +105,9 @@ export default function AddTaskModal({
                             color="black"
                             style={styles.pickerItem}
                         />
-                    </Picker>
+                        </Picker>
+                        <Text style={styles.freqText}>at</Text>
+                        </View>
                     {error && <Text>Invalid Task!</Text>}
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
@@ -185,4 +189,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: "#141414",
     },
+    freqText: {
+        fontSize: 20,
+    }
 });

@@ -105,7 +105,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                                             ? {
                                                   backgroundColor: "#673147",
                                               }
-                                            : { backgroundColor: "#DE3163", },
+                                            : { backgroundColor: "#DE3163" },
                                     ]}
                                 ></View>
                             ) : (
@@ -319,7 +319,6 @@ const progressBar = StyleSheet.create({
         borderRadius: 3,
     },
     progress: {
-        
         height: 10,
         borderRadius: 3,
     },
