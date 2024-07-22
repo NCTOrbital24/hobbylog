@@ -8,6 +8,7 @@ import {
     Modal,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function AddTaskModal({
     visible,
@@ -16,14 +17,33 @@ export default function AddTaskModal({
     tasks,
     setTasks,
 }) {
-    const initialTask = { name: "", description: "", frequency: "daily" };
+    const initialTask = {
+        name: "",
+        description: "",
+        frequency: "daily",
+        nextDueDate: null,
+        exp: 0,
+    };
     const [editedTask, setEditedTask] = useState({ ...task });
     const [error, showError] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [date, setDate] = useState(editedTask.nextDueDate || new Date());
+    const [dateConfirmed, setDateConfirmed] = useState(
+        editedTask.nextDueDate ? true : false
+    );
 
     const [selectedFrequency, setSelectedFrequency] = useState("daily");
 
     useEffect(() => {
-        setEditedTask({ ...task });
+        if (task) {
+            setEditedTask({ ...task });
+            setDate(task.nextDueDate ? new Date(task.nextDueDate) : new Date());
+            setDateConfirmed(!!task.nextDueDate);
+        } else {
+            setEditedTask({ ...initialTask });
+            setDate(new Date());
+            setDateConfirmed(false);
+        }
     }, [task]);
 
     const handleInputChange = (name, value) => {
@@ -77,37 +97,90 @@ export default function AddTaskModal({
                             handleInputChange("description", text)
                         }
                     />
-                    <View style={{ flexDirection: "row", alignItems: "center", }}>
-                        <Text style={styles.freqText}>Repeat</Text>
-                    <Picker
-                        selectedValue={selectedFrequency}
-                        onValueChange={(itemValue) => {
-                            handleInputChange("frequency", itemValue);
-                            setSelectedFrequency(itemValue);
-                        }}
-                        style={styles.picker}
+                    <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                        <Picker.Item
-                            label="Daily"
-                            value="daily"
-                            color="black"
-                            style={styles.pickerItem}
-                        />
-                        <Picker.Item
-                            label="Weekly"
-                            value="weekly"
-                            color="black"
-                            style={styles.pickerItem}
-                        />
-                        <Picker.Item
-                            label="Monthly"
-                            value="monthly"
-                            color="black"
-                            style={styles.pickerItem}
-                        />
+                        <Text style={styles.freqText}>Repeat</Text>
+                        <Picker
+                            selectedValue={selectedFrequency}
+                            onValueChange={(itemValue) => {
+                                handleInputChange("frequency", itemValue);
+                                setSelectedFrequency(itemValue);
+                            }}
+                            style={styles.picker}
+                        >
+                            <Picker.Item
+                                label="Daily"
+                                value="daily"
+                                color="black"
+                                style={styles.pickerItem}
+                            />
+                            <Picker.Item
+                                label="Weekly"
+                                value="weekly"
+                                color="black"
+                                style={styles.pickerItem}
+                            />
+                            <Picker.Item
+                                label="Monthly"
+                                value="monthly"
+                                color="black"
+                                style={styles.pickerItem}
+                            />
                         </Picker>
-                        <Text style={styles.freqText}>at</Text>
-                        </View>
+                        <Text style={styles.freqText}>at </Text>
+                    </View>
+                    <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                        <TouchableOpacity
+                            onPress={() => {
+                                setOpen(true);
+                            }}
+                        >
+                            {dateConfirmed ? (
+                                <Text style={styles.freqText}>
+                                    {date.toLocaleDateString()}
+                                </Text>
+                            ) : (
+                                <Text style={styles.freqText}>
+                                    (Click here to pick a date!)
+                                </Text>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                    {open && (
+                        <DateTimePicker
+                            value={date}
+                            mode="date"
+                            display="default"
+                            onChange={(event, selectedDate) => {
+                                if (event.type === "set") {
+                                    const currentDate =
+                                        selectedDate || editedTask.nextDueDate;
+                                    setDate(currentDate);
+                                    setEditedTask((prevTask) => ({
+                                        ...prevTask,
+                                        nextDueDate: currentDate,
+                                    }));
+                                    setDateConfirmed(true);
+                                    showError(false);
+                                    setOpen(false);
+                                } else {
+                                    setOpen(false);
+                                }
+                            }}
+                        />
+                    )}
+                    <TextInput
+                        value={"Exp Reward: " + String(editedTask.exp)}
+                        onChangeText={(text) =>
+                            handleInputChange("exp", Number(text))
+                        }
+                        style={styles.input}
+                        placeholder="Exp reward"
+                        keyboardType="numeric"
+                    />
                     {error && <Text>Invalid Task!</Text>}
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
@@ -191,5 +264,5 @@ const styles = StyleSheet.create({
     },
     freqText: {
         fontSize: 20,
-    }
+    },
 });

@@ -14,7 +14,7 @@ import { useRouter } from "expo-router";
 import Background from "@/assets/images/defaultBackground.png";
 import AddGoalModal from "@/components/HobbyCreation/AddGoalModal";
 import AddTaskModal from "@/components/HobbyCreation/AddTaskModal";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
 import sortGoalsByDeadline from "@/functions/sortGoalsByDeadline";
 
 import { backendLink } from "@/constants/constants";
@@ -91,7 +91,6 @@ export default function CreateHobbyScreen() {
             });
             setGoals([]);
             setTasks([]);
-
         } catch (error) {
             console.error("Error adding hobby:", error);
         } finally {
@@ -204,6 +203,7 @@ export default function CreateHobbyScreen() {
                                             Deadline:{" "}
                                             {item.deadline.toLocaleDateString()}
                                         </Text>
+                                        <Text>Reward: {item.exp} exp</Text>
                                     </View>
                                 </TouchableOpacity>
                             )}
@@ -269,21 +269,23 @@ export default function CreateHobbyScreen() {
                     ) : (
                         <Text>No tasks yet. Add a new task!</Text>
                     )}
-                                    <TouchableOpacity
-                    style={styles.goalButton}
-                    onPress={() => {
-                        setTaskModalTask(undefined);
-                        showTaskModal(true);
-                    }}
-                >
-                    <AntDesign name="pluscircle" size={20} color="black" />
-                </TouchableOpacity>
-                
+                    <TouchableOpacity
+                        style={styles.goalButton}
+                        onPress={() => {
+                            setTaskModalTask(undefined);
+                            showTaskModal(true);
+                        }}
+                    >
+                        <AntDesign name="pluscircle" size={20} color="black" />
+                    </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.submitButton} onPress={handleSubmitHobby}>
+                <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={handleSubmitHobby}
+                >
                     <Text style={styles.submitText}>(っ◔◡◔)っ ♥ Submit! ♥</Text>
-                    </TouchableOpacity>
+                </TouchableOpacity>
             </View>
             <AddGoalModal
                 visible={goalModal}
@@ -382,5 +384,5 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "black",
         fontWeight: "bold",
-    }
+    },
 });

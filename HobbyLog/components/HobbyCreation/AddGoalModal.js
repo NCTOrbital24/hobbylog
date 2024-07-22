@@ -17,15 +17,25 @@ export default function AddGoalModal({
     goals,
     setGoals,
 }) {
-    const initialGoal = { name: "", description: "", deadline: null };
-    const [editedGoal, setEditedGoal] = useState({ ...initialGoal });
+    const initialGoal = { name: "", description: "", deadline: null, exp: 0 };
+    const [editedGoal, setEditedGoal] = useState(initialGoal);
     const [open, setOpen] = useState(false);
-    const [dateConfirmed, setDateConfirmed] = useState(false);
     const [date, setDate] = useState(editedGoal.deadline || new Date());
+    const [dateConfirmed, setDateConfirmed] = useState(
+        editedGoal.deadline ? true : false
+    );
     const [error, showError] = useState(false);
 
     useEffect(() => {
-        setEditedGoal({ ...goal });
+        if (goal) {
+            setEditedGoal({ ...goal });
+            setDate(goal.deadline ? new Date(goal.deadline) : new Date());
+            setDateConfirmed(!!goal.deadline);
+        } else {
+            setEditedGoal({ ...initialGoal });
+            setDate(new Date());
+            setDateConfirmed(false);
+        }
     }, [goal]);
 
     const handleInputChange = (name, value) => {
@@ -133,8 +143,10 @@ export default function AddGoalModal({
                         />
                     )}
                     <TextInput
-                        value={editedGoal.expf}
-                        onChangeText={(text) => handleInputChange("exp", (Number(text)))}
+                        value={"Exp Reward: " + String(editedGoal.exp)}
+                        onChangeText={(text) =>
+                            handleInputChange("exp", Number(text))
+                        }
                         style={styles.input}
                         placeholder="Exp reward"
                         keyboardType="numeric"

@@ -74,7 +74,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
             <TouchableOpacity
                 onPress={() =>
                     router.push({
-                        pathname: "EditHobbyPage",
+                        pathname: "EditHobbyScreen",
                         params: { hobbyId: hobbyId },
                     })
                 }
@@ -180,6 +180,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                                             item.deadline
                                         ).toLocaleDateString()}
                                     </Text>
+                                    <Text>Reward: {item.exp} exp</Text>
                                 </View>
                             </View>
                         )}
@@ -231,6 +232,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                                         </Text>
                                         <Text>{item.description}</Text>
                                         <Text>Frequency: {item.frequency}</Text>
+                                        <Text>Exp: {item.exp}</Text>
                                     </View>
                                 </TouchableOpacity>
                             )}
