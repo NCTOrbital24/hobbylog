@@ -6,9 +6,9 @@
 
 ## Features
 - **User Authentication:** -  Register and login to your own profile. (Implemented)
-- **Progress Tracking** - The core feature of the application is the ability to create and customise hobbies, with achievement levels that track one’s progress in a hobby. (Planned)
-- **Goal Setting** - Set short term and long term goals, as well as weekly/monthly tasks. Set reminders for them and catalog your progress by uploading images. (Planned)
-- **Achievements** - Earn EXP and Achivements as you develop your skills. They don't do anything (and most likely will never), but they're (probably) pretty! (Planned)
+- **Progress Tracking** - The core feature of the application is the ability to create and customise hobbies, with goals and tasks that track one’s progress in a hobby. (Implemented)
+- **Goal Setting** - Set short term and long term goals, as well as daily/weekly/monthly tasks. Log your progress and see how far you've come! (Implemented)
+- **Achievements** - Earn EXP and Achivements as you develop your skills. They don't do anything (and most likely will never), but they're (probably) pretty! (Implemented)
 - **Shareable hobby templates** - Export and import hobby templates created by other users, allowing you to easily customise and adapt the hobby trackers of others for personal use. (Planned)
 - **Community features** - The ability to search for other user’s profiles, hobbies, and their progress. (Planned)
 - **Co-op mode** - Allow users to work on the same hobby together, allowing them to track the progress of others and the goals that they have completed. (Planned)

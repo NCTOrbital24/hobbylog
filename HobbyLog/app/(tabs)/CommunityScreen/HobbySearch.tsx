@@ -20,7 +20,7 @@ export default function HobbySearch() {
     // * ARRAY THAT IS CHANGED WHEN SEARCHED, AND THEN RENDERED
 
     const renderHobbySearchResult = ({ hobbyInfo }) => (
-        <HobbySearchCard info={hobbyInfo} />
+        <HobbySearchCard hobbyInfo={hobbyInfo} />
     );
 
     const handleHobbySearch = () => {
@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
     body: {
-        borderWidth: 1,
         width: "90%",
         alignSelf: "center",
         maxHeight: "92%",
