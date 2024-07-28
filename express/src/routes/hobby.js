@@ -151,7 +151,7 @@ router.post("/:hobbyId/goals/addAll", isAuthenticated, addAllGoals);
 router.post("/:hobbyId/tasks/addAll", isAuthenticated, addAllTasks);
 
 router.post("/create", isAuthenticated, async (req, res) => {
-    const { hobbyName, hobbyDescription, goals, tasks } = req.body;
+    const { hobbyName, hobbyDescription, goals, tasks, profilePic} = req.body;
 
     try {
         const user = req.user;
@@ -169,6 +169,7 @@ router.post("/create", isAuthenticated, async (req, res) => {
             name: hobbyName,
             description: hobbyDescription,
             user: user._id,
+            profilePic: profilePic,
         });
 
         const savedHobby = await newHobby.save();
@@ -260,6 +261,7 @@ router.put("/:hobbyId/update", isAuthenticated, async (req, res) => {
         // Update hobby fields
         hobby.name = name;
         hobby.description = description;
+        hobby.profilePic = profilePic;
 
         // Update or add goals
         const updatedGoals = await Promise.all(

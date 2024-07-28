@@ -27,12 +27,14 @@ export default function UserSearch() {
     console.log("testUserArray", testUserArray);
 
     const renderUserSearchResult = (userInfo) => (
-        <UserSearchCard userInfo={userInfo} />
+        <UserSearchCard userInfo={userInfo} hideTick={false} />
     );
 
     const handleUserSearch = () => {
+        
         console.log("searching for:", searchText);
     }; //TODO: HANDLE SEARCH LOL
+
     return (
         <ImageBackground source={Background} style={styles.background}>
             <SafeAreaView style={styles.wrapper}>

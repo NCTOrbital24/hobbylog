@@ -8,6 +8,7 @@ const hobbySchema = new Schema({
     startDate: { type: Date, default: Date.now },
     goals: [{ type: Schema.Types.ObjectId, ref: "Goal" }],
     tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
+    profilePic: {type:String},
 });
 
 const Hobby = mongoose.model("Hobby", hobbySchema);

@@ -12,11 +12,14 @@ export default async function fetchHobbies(setHobbies, userId) {
         body: JSON.stringify({ userId }),
     });
 
+
     if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
     }
 
     const hobbiesData = await response.json();
+
+    console.log(hobbiesData);
 
     const updatedHobbiesData = parseHobby(hobbiesData);
 
