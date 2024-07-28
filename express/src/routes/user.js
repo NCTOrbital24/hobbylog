@@ -24,4 +24,24 @@ router.get("/:userId/level", isAuthenticated, async (req, res) => {
     }
 });
 
+router.get("/:userId/friends", isAuthenticated, async (req, res) => {
+    try {
+        // Find the user by ID
+        const user = await User.findById(userId).populate({
+            path: "friends",
+            select: "username _id", // Only include username and _id
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Return the friends array
+        res.status(200).json(user.friends);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
 module.exports = router;

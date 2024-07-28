@@ -29,10 +29,10 @@ export default function FriendSearch() {
         <UserSearchCard userInfo={userInfo} hideTick={true} />
     ); //? IS IT BETTER TO HAVE A FRIENDSEARHCARD?
 
-    console.log("FriendArray", friendArray);
     const handleFriendSearch = () => {
         console.log("searching for:", searchText);
     }; //TODO: HANDLE SEARCH LOL
+
     return (
         <ImageBackground source={Background} style={styles.background}>
             <SafeAreaView style={styles.wrapper}>

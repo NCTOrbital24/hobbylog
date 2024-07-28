@@ -10,6 +10,7 @@ const authRoute = require("./routes/auth");
 const hobbyRoute = require("./routes/hobby");
 const goalRoute = require("./routes/goal");
 const userRoute = require("./routes/user");
+const friendRoute = require("./routes/friend");
 
 require("./database");
 
@@ -46,5 +47,6 @@ app.use("/api/auth", authRoute);
 app.use("/api/hobby", hobbyRoute);
 app.use("/api/goal", goalRoute);
 app.use("/api/user", userRoute);
+app.use("/api/friend", friendRoute);
 
 app.listen(PORT, () => console.log(`Running Express Server on Port ${PORT}!`));

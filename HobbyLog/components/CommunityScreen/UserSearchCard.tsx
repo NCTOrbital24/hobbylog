@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { backendLink } from "@/constants/constants";
 
 export default function UserSearchCard({
     userInfo,
@@ -18,6 +19,27 @@ export default function UserSearchCard({
     const router = useRouter();
 
     const { _id, name, icon, isFriend } = userInfo;
+    const [friendStatus, setFriendStatus] = useState(isFriend);
+
+    const addAsFriend = async () => {
+        try {
+            const response = await fetch(
+                `${backendLink}/api/friend/${_id}/add`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            if (!response.ok) {
+                throw new Error("Failed to add friend");
+            }
+            setFriendStatus(true);
+        } catch (error) {
+            console.error("Error adding friend:", error);
+        }
+    };
 
     return (
         <View style={styles.card}>
@@ -37,18 +59,20 @@ export default function UserSearchCard({
                     <Text style={styles.infoText}>{name}</Text>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity
-                onPress={() => addAsFriend()}
-                style={styles.check}
-            >
-                {hideTick ? (
-                    <View></View>
-                ) : isFriend ? (
+            {hideTick ? (
+                <View></View>
+            ) : friendStatus ? (
+                <View style={styles.check}>
                     <Ionicons name="checkmark" size={24} color="black" />
-                ) : (
+                </View>
+            ) : (
+                <TouchableOpacity
+                    onPress={() => addAsFriend()}
+                    style={styles.check}
+                >
                     <AntDesign name="pluscircleo" size={24} color="black" />
-                )}
-            </TouchableOpacity>
+                </TouchableOpacity>
+            )}
         </View>
     );
 }

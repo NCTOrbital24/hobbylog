@@ -23,7 +23,13 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: new Date(),
     },
-
+    friends: {
+        type: [{
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: "User"
+        }],
+        default: [],
+    },
     hobbies: {
         type: [{
             type: mongoose.SchemaTypes.ObjectId,
