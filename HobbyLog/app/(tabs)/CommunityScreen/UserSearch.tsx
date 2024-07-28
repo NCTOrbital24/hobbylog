@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     StyleSheet,
@@ -10,6 +10,7 @@ import {
 import Background from "@/assets/images/defaultBackground.png";
 import { AntDesign } from "@expo/vector-icons";
 import UserSearchCard from "@/components/CommunityScreen/UserSearchCard";
+import { backendLink } from "@/constants/constants";
 
 export default function UserSearch() {
     const testUser = {
@@ -18,22 +19,43 @@ export default function UserSearch() {
         icon: "https://pbs.twimg.com/profile_images/1512898257902579717/sUi7n5Pi_400x400.jpg",
         isFriend: true,
     };
-    const testUserArray = [testUser];
+    const testUserArray = [];
     //! RUDIMENTARY TEST TO MAKE SURE CARDS ARE RENDERING.
 
     const [searchText, setSearchText] = useState("");
     const [userArray, setUserArray] = useState<Array<any>>(testUserArray);
     // * ARRAY THAT IS CHANGED WHEN SEARCHED, AND THEN RENDERED
-    console.log("testUserArray", testUserArray);
+    console.log(userArray);
 
     const renderUserSearchResult = (userInfo) => (
         <UserSearchCard userInfo={userInfo} hideTick={false} />
     );
 
-    const handleUserSearch = () => {
-        
-        console.log("searching for:", searchText);
-    }; //TODO: HANDLE SEARCH LOL
+    const searchUsers = useCallback(async () => {
+        if (searchText === "") {
+            setUserArray([]);
+        } else {
+            try {
+                const response = await fetch(
+                    `${backendLink}/api/search/users?search=${encodeURIComponent(
+                        searchText
+                    )}`
+                );
+                if (!response.ok) {
+                    throw new Error("Failed to fetch users");
+                }
+                const data = await response.json();
+                console.log(data);
+                setUserArray(data);
+            } catch (err) {
+                console.error(err.message);
+            }
+        }
+    }, [searchText]);
+
+    useEffect(() => {
+        searchUsers();
+    }, [searchText, searchUsers]);
 
     return (
         <ImageBackground source={Background} style={styles.background}>
@@ -49,7 +71,7 @@ export default function UserSearch() {
                         style={styles.searchText}
                         onChangeText={(text) => {
                             setSearchText(text);
-                            handleUserSearch();
+                            searchUsers();
                         }}
                         placeholder="Search for a user..."
                         value={searchText}

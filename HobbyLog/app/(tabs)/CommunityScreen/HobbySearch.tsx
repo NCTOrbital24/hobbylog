@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     StyleSheet,
     ImageBackground,
     SafeAreaView,
+    Text,
     FlatList,
     TextInput,
 } from "react-native";
 import Background from "@/assets/images/defaultBackground.png";
 import { AntDesign } from "@expo/vector-icons";
 import HobbySearchCard from "@/components/CommunityScreen/HobbySearchCard";
+import { backendLink } from "@/constants/constants";
+import fetchHobbies from "@/functions/FetchHobbies";
 
 export default function HobbySearch() {
     const testHobby = {
@@ -21,7 +24,7 @@ export default function HobbySearch() {
         goalsLength: 1,
         tasksLength: 1,
     };
-    const testHobbyArray = [testHobby];
+    const testHobbyArray = [];
     //! RUDIMENTARY TEST TO MAKE SURE CARDS ARE RENDERING.
 
     const [searchText, setSearchText] = useState("");
@@ -32,9 +35,31 @@ export default function HobbySearch() {
         <HobbySearchCard hobbyInfo={hobbyInfo} />
     );
 
-    const handleHobbySearch = () => {
-        console.log("searching for:", searchText);
-    }; //TODO: HANDLE SEARCH LOL
+    const searchHobbies = useCallback(async () => {
+        if (searchText === "") {
+            setHobbyArray([]);
+        } else {
+            try {
+                const response = await fetch(
+                    `${backendLink}/api/search/hobbies?search=${encodeURIComponent(
+                        searchText
+                    )}`
+                );
+                if (!response.ok) {
+                    throw new Error("Failed to fetch hobbies");
+                }
+                const data = await response.json();
+                setHobbyArray(data);
+            } catch (err) {
+                console.error(err.message);
+            }
+        }
+    }, [searchText]);
+
+    useEffect(() => {
+        searchHobbies();
+    }, [searchText, searchHobbies]);
+
     return (
         <ImageBackground source={Background} style={styles.background}>
             <SafeAreaView style={styles.wrapper}>
@@ -49,7 +74,7 @@ export default function HobbySearch() {
                         style={styles.searchText}
                         onChangeText={(text) => {
                             setSearchText(text);
-                            handleHobbySearch();
+                            searchHobbies();
                         }}
                         placeholder="Search for a hobby..."
                         value={searchText}
@@ -57,11 +82,17 @@ export default function HobbySearch() {
                 </View>
                 <View style={styles.line}></View>
                 <View style={styles.body}>
-                    <FlatList
-                        data={hobbyArray}
-                        renderItem={({ item }) => renderHobbySearchResult(item)}
-                        keyExtractor={(item) => item._id}
-                    />
+                    {hobbyArray.length === 0 ? (
+                        <Text>No hobbies found</Text>
+                    ) : (
+                        <FlatList
+                            data={hobbyArray}
+                            renderItem={({ item }) =>
+                                renderHobbySearchResult(item)
+                            }
+                            keyExtractor={(item) => item._id}
+                        />
+                    )}
                 </View>
             </SafeAreaView>
         </ImageBackground>

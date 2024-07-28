@@ -10,7 +10,7 @@ export default function UserSearchCard({
 }: {
     userInfo: {
         _id: string;
-        name: string;
+        username: string;
         icon: string;
         isFriend: boolean;
     };
@@ -18,7 +18,7 @@ export default function UserSearchCard({
 }) {
     const router = useRouter();
 
-    const { _id, name, icon, isFriend } = userInfo;
+    const { _id, username, icon, isFriend } = userInfo;
     const [friendStatus, setFriendStatus] = useState(isFriend);
 
     const addAsFriend = async () => {
@@ -56,7 +56,7 @@ export default function UserSearchCard({
                     <Image source={{ uri: icon }} style={styles.icon} />
                 </View>
                 <View style={styles.info}>
-                    <Text style={styles.infoText}>{name}</Text>
+                    <Text style={styles.infoText}>{username}</Text>
                 </View>
             </TouchableOpacity>
             {hideTick ? (
