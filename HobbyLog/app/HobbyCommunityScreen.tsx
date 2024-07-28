@@ -26,7 +26,7 @@ export default function HobbyCommunityScreen() {
 
     const updateLink = backendLink + "/api/hobby/" + hobbyId + "/update";
     const retrieveLink = backendLink + "/api/hobby/" + hobbyId + "/get";
-    const deleteLink = backendLink + "/api/hobby/" + hobbyId + "/remove";
+    const createLink = backendLink + "/api/hobby/create";
 
     const [hobby, setHobby] = useState<Hobby>(EMPTY_HOBBY);
 
@@ -65,8 +65,33 @@ export default function HobbyCommunityScreen() {
         router.back();
     };
 
-    const addHobbyToProfile = () => {
-        //TODO
+    const addHobbyToProfile = async () => {
+        const goals = hobby.goals;
+        const newGoals = sortGoalsByDeadline(goals);
+        const data = {
+            hobbyName: hobby.name,
+            hobbyDescription: hobby.description,
+            goals: newGoals,
+            tasks: hobby.tasks,
+        };
+
+        try {
+            const response = await fetch(createLink, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to add hobby");
+            }
+
+            router.navigate("HomeScreen");
+        } catch (error) {
+            console.error("Error adding hobby:", error);
+        }
     };
 
     useFocusEffect(

@@ -21,6 +21,7 @@ export default function AddGoalModal({
     const [editedGoal, setEditedGoal] = useState(initialGoal);
     const [open, setOpen] = useState(false);
     const [date, setDate] = useState(editedGoal.deadline || new Date());
+    const [exp, setExp] = useState<String>("0");
     const [dateConfirmed, setDateConfirmed] = useState(
         editedGoal.deadline ? true : false
     );
@@ -31,10 +32,12 @@ export default function AddGoalModal({
             setEditedGoal({ ...goal });
             setDate(goal.deadline ? new Date(goal.deadline) : new Date());
             setDateConfirmed(!!goal.deadline);
+            setExp(goal.exp.toString());
         } else {
             setEditedGoal({ ...initialGoal });
             setDate(new Date());
             setDateConfirmed(false);
+            setExp("0");
         }
     }, [goal]);
 
@@ -143,10 +146,14 @@ export default function AddGoalModal({
                         />
                     )}
                     <TextInput
-                        value={"Exp Reward: " + String(editedGoal.exp)}
-                        onChangeText={(text) =>
-                            handleInputChange("exp", Number(text))
-                        }
+                        value={exp}
+                        onChangeText={(value) => {
+                            const parsedValue = parseInt(value, 10);
+                            setExp(value);
+                            if (!isNaN(parsedValue) || value === "") {
+                                handleInputChange("exp", parsedValue);
+                            }
+                        }}
                         style={styles.input}
                         placeholder="Exp reward"
                         keyboardType="numeric"

@@ -8,27 +8,19 @@ export default function HobbySearchCard({
     hobbyInfo,
 }: {
     hobbyInfo: {
-        _id: String;
-        name: String;
-        description: String;
-        icon: String;
-        owner: String;
+        _id: string;
+        name: string;
+        description: string;
+        icon: string;
+        owner: string;
         goalsLength: number;
         tasksLength: number;
     };
 }) {
-    const testHobby = {
-        _id: "hey",
-        name: "hobbyName",
-        description: "hobbyDescription",
-        icon: "hobbyIcon",
-        owner: "hobbyOwner",
-        goalsLength: 1,
-        tasksLength: 1,
-    };
+
     const router = useRouter();
     const { _id, name, icon, description, owner, goalsLength, tasksLength } =
-        testHobby;
+        hobbyInfo;
 
     return (
         <TouchableOpacity

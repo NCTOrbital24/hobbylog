@@ -31,6 +31,7 @@ export default function AddTaskModal({
     const [dateConfirmed, setDateConfirmed] = useState(
         editedTask.nextDueDate ? true : false
     );
+    const [exp, setExp] = useState("0");
 
     const [selectedFrequency, setSelectedFrequency] = useState("daily");
 
@@ -39,10 +40,12 @@ export default function AddTaskModal({
             setEditedTask({ ...task });
             setDate(task.nextDueDate ? new Date(task.nextDueDate) : new Date());
             setDateConfirmed(!!task.nextDueDate);
+            setExp(task.exp.toString());
         } else {
             setEditedTask({ ...initialTask });
             setDate(new Date());
             setDateConfirmed(false);
+            setExp("0");
         }
     }, [task]);
 
@@ -128,7 +131,7 @@ export default function AddTaskModal({
                                 style={styles.pickerItem}
                             />
                         </Picker>
-                        <Text style={styles.freqText}>at </Text>
+                        <Text style={styles.freqText}>from </Text>
                     </View>
                     <View
                         style={{ flexDirection: "row", alignItems: "center" }}
@@ -173,10 +176,14 @@ export default function AddTaskModal({
                         />
                     )}
                     <TextInput
-                        value={"Exp Reward: " + String(editedTask.exp)}
-                        onChangeText={(text) =>
-                            handleInputChange("exp", Number(text))
-                        }
+                        value={exp}
+                        onChangeText={(text) => {
+                            const parsedValue = parseInt(value, 10);
+                            setExp(value);
+                            if (!isNaN(parsedValue) || value === "") {
+                                handleInputChange("exp", Number(text));
+                            }
+                        }}
                         style={styles.input}
                         placeholder="Exp reward"
                         keyboardType="numeric"

@@ -12,15 +12,22 @@ import { AntDesign } from "@expo/vector-icons";
 import UserSearchCard from "@/components/CommunityScreen/UserSearchCard";
 
 export default function UserSearch() {
-    const testUserArray = ["hi", "hi", "hi"];
+    const testUser = {
+        _id: "userid",
+        name: "username",
+        icon: "https://pbs.twimg.com/profile_images/1512898257902579717/sUi7n5Pi_400x400.jpg",
+        isFriend: true,
+    };
+    const testUserArray = [testUser];
     //! RUDIMENTARY TEST TO MAKE SURE CARDS ARE RENDERING.
 
     const [searchText, setSearchText] = useState("");
     const [userArray, setUserArray] = useState<Array<any>>(testUserArray);
     // * ARRAY THAT IS CHANGED WHEN SEARCHED, AND THEN RENDERED
+    console.log("testUserArray", testUserArray);
 
-    const renderUserSearchResult = ({ userInfo }) => (
-        <UserSearchCard info={userInfo} />
+    const renderUserSearchResult = (userInfo) => (
+        <UserSearchCard userInfo={userInfo} />
     );
 
     const handleUserSearch = () => {
@@ -50,7 +57,7 @@ export default function UserSearch() {
                 <View style={styles.body}>
                     <FlatList
                         data={userArray}
-                        renderItem={renderUserSearchResult}
+                        renderItem={({ item } ) => renderUserSearchResult(item)}
                         keyExtractor={(item) => item._id}
                     />
                 </View>
@@ -84,7 +91,6 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
     body: {
-        borderWidth: 1,
         width: "90%",
         alignSelf: "center",
         maxHeight: "92%",

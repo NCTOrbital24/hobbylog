@@ -12,17 +12,24 @@ import { AntDesign } from "@expo/vector-icons";
 import UserSearchCard from "@/components/CommunityScreen/UserSearchCard";
 
 export default function FriendSearch() {
-    const testFriendArray = ["hi", "hi", "hi"];
+    const testFriend = {
+        _id: "userid",
+        name: "username",
+        icon: "https://pbs.twimg.com/profile_images/1512898257902579717/sUi7n5Pi_400x400.jpg",
+        isFriend: true,
+    };
+    const testFriendArray = [testFriend];
     //! RUDIMENTARY TEST TO MAKE SURE CARDS ARE RENDERING.
 
     const [searchText, setSearchText] = useState("");
     const [friendArray, setFriendArray] = useState<Array<any>>(testFriendArray);
     // * ARRAY THAT IS CHANGED WHEN SEARCHED, AND THEN RENDERED
 
-    const renderUserSearchResult = ({ userInfo }) => (
-        <UserSearchCard info={userInfo} />
+    const renderFriendSearchResult = (userInfo) => (
+        <UserSearchCard userInfo={userInfo} hideTick={true} />
     ); //? IS IT BETTER TO HAVE A FRIENDSEARHCARD?
 
+    console.log("FriendArray", friendArray);
     const handleFriendSearch = () => {
         console.log("searching for:", searchText);
     }; //TODO: HANDLE SEARCH LOL
@@ -50,7 +57,9 @@ export default function FriendSearch() {
                 <View style={styles.body}>
                     <FlatList
                         data={friendArray}
-                        renderItem={renderUserSearchResult}
+                        renderItem={({ item }) => 
+                            renderFriendSearchResult(item)
+                        }
                         keyExtractor={(item) => item._id}
                     />
                 </View>
@@ -84,7 +93,6 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
     body: {
-        borderWidth: 1,
         width: "90%",
         alignSelf: "center",
         maxHeight: "92%",

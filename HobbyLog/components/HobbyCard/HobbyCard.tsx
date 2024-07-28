@@ -23,7 +23,12 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     const tasks = hobby.tasks;
     let goalsCompleted = 0;
     const checkboxArray = [...goals].map((goal) => goal.completed);
+    const taskCheckboxArray = [...tasks].map((task) => {
+        const lastDueDate = new Date(task.lastDueDate);
+        return lastDueDate > (new Date());
+    })
 
+    const [taskCheckbox, setTaskCheckbox] = useState<Array<boolean>>(taskCheckboxArray);
     const [checkbox, setCheckbox] = useState<Array<boolean>>(checkboxArray);
 
     for (let i = 0; i < goals.length; i++) {
@@ -31,6 +36,48 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
         if (goal.completed) {
             goalsCompleted++;
         }
+    }
+
+    const handleTaskChecked = (value, index) => {
+        const newTaskCheckbox = [...checkbox];
+        newTaskCheckbox[index] = !value;
+        const taskId = tasks[index]._id;
+        const markTaskAsCompleted = async (
+            taskId: string,
+            complete: boolean,
+        ) => {
+            try {
+                const response = await fetch(
+                    `${backendLink}/api/task/${taskId}/markComplete`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to complete task");
+                }
+
+                const task = tasks[index];
+                const now = new Date();
+                task.lastCompleted = task.nextDueDate;
+                if (task.frequency === 'daily') {
+                    task.nextDueDate = new Date(now.setDate(now.getDate() + 1));
+                }
+                if (task.frequency === 'weekly') {
+                    task.nextDueDate = new Date(now.setDate(now.getDate() + 7));
+                }
+                if (task.frequency === 'monthly') {
+                    task.nextDueDate = new Date(now.setDate(now.getDate() + 1));
+                }
+            } catch (err) {
+                console.error("Error completing task", err);
+            }
+        };
+        markTaskAsCompleted(taskId, true);
     }
 
     const handleGoalChecked = (value, index) => {
@@ -211,17 +258,19 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                             style={styles.list}
                             data={tasks}
                             renderItem={({ item, index }) => (
-                                <TouchableOpacity
-                                    onPress={() => navigateToTask(index)}
-                                >
                                     <View
-                                        style={{
-                                            marginBottom: 10,
-                                            padding: 10,
-                                            backgroundColor: "#F2E6FF",
-                                            borderRadius: 5,
+                                        style={styles.card}
+                                >
+                                    <Checkbox
+                                        value={taskCheckbox[index]}
+                                        onValueChange={(value) => {
+                                            handleTaskChecked();
                                         }}
-                                    >
+                                        size={18}
+                                        color={"black"}
+                                        style={styles.checkbox}
+                                        pressable={true}
+                                    />
                                         <Text
                                             style={{
                                                 fontSize: 18,
@@ -234,7 +283,6 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                                         <Text>Frequency: {item.frequency}</Text>
                                         <Text>Exp: {item.exp}</Text>
                                     </View>
-                                </TouchableOpacity>
                             )}
                             keyExtractor={(item, index) => index.toString()}
                         />

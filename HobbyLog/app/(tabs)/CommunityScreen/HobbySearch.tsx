@@ -12,14 +12,23 @@ import { AntDesign } from "@expo/vector-icons";
 import HobbySearchCard from "@/components/CommunityScreen/HobbySearchCard";
 
 export default function HobbySearch() {
-    const testHobbyArray = ["hi", "hi", "hi"];
+    const testHobby = {
+        _id: "hey",
+        name: "hobbyName",
+        description: "hobbyDescription",
+        icon: "hobbyIcon",
+        owner: "hobbyOwner",
+        goalsLength: 1,
+        tasksLength: 1,
+    };
+    const testHobbyArray = [testHobby];
     //! RUDIMENTARY TEST TO MAKE SURE CARDS ARE RENDERING.
 
     const [searchText, setSearchText] = useState("");
     const [hobbyArray, setHobbyArray] = useState<Array<any>>(testHobbyArray);
     // * ARRAY THAT IS CHANGED WHEN SEARCHED, AND THEN RENDERED
 
-    const renderHobbySearchResult = ({ hobbyInfo }) => (
+    const renderHobbySearchResult = (hobbyInfo) => (
         <HobbySearchCard hobbyInfo={hobbyInfo} />
     );
 
@@ -50,7 +59,7 @@ export default function HobbySearch() {
                 <View style={styles.body}>
                     <FlatList
                         data={hobbyArray}
-                        renderItem={renderHobbySearchResult}
+                        renderItem={({ item }) => renderHobbySearchResult(item)}
                         keyExtractor={(item) => item._id}
                     />
                 </View>
@@ -88,5 +97,5 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         maxHeight: "92%",
         marginTop: 10,
-    }
+    },
 });
