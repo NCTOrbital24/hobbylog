@@ -7,9 +7,8 @@ export interface Task {
     name: string; // can be repeated.
     description: string;
     frequency: string; // determines if the task repeats once, daily, weekly, monthly or yearly
-    time: number | null;
-    day: number | null; //if month is null, determines the day of the week. If not, the day of the month
-    month: number | null;
+    lastDueDate: Date;
+    exp: number;
 }
 
 export default function TaskConstructor(
@@ -17,9 +16,8 @@ export default function TaskConstructor(
     name: string,
     description: string,
     frequency: string,
-    time: number | null,
-    day: number | null,
-    month: number | null
+    lastDueDate: Date,
+    exp: number,
 ): Task {
     if (name && description && frequency) {
         return {
@@ -27,9 +25,8 @@ export default function TaskConstructor(
             name: name,
             description: description,
             frequency: frequency,
-            time: time,
-            day: day,
-            month: month,
+            lastDueDate: lastDueDate,
+            exp: exp,
         };
     } else {
         throw Error;

@@ -5,6 +5,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
 const fs = require('fs');
+
 require("./strategies/local");
 
 const authRoute = require("./routes/auth");
@@ -41,6 +42,8 @@ app.get("", (req, res) => {
     res.sendStatus(200);
 });
 
+
+app.use('/uploads', express.static('uploads'));
 //register routes
 app.use("/api/auth", authRoute);
 app.use("/api/hobby", hobbyRoute);

@@ -20,13 +20,14 @@ router.post("/register", async (request, response) => {
         console.log("email in use");
         response.status(400).send({ msg: "User already exists!" });
     } else {
+        console.log("hashing password");
         const password = hashPassword(request.body.password);
         console.log(password);
 
         const username = request.body.username;
 
         const newUser = User.create({ username, password, email });
-        response.send(201);
+        response.sendStatus(201);
     }
 });
 

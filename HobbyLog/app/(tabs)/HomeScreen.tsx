@@ -12,19 +12,47 @@ import Background from "@/assets/images/defaultBackground.png";
 import HobbyCard from "@/components/HobbyCard/HobbyCard";
 import { useFocusEffect } from "expo-router";
 import fetchHobbies from "@/functions/FetchHobbies";
+import { backendLink } from "@/constants/constants";
+import RainbowProgressBar from "@/components/RainbowProgressBar";
 
 export default function HomeScreen() {
+    const levelUpExp = (level: number) => 100 * level;
     const [username, setUsername] = useState(null);
     const storedUsername = SecureStore.getItem("username");
     const [hobbies, setHobbies] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [focus, toggleFocus] = useState(false);
+    const [level, setLevel] = useState<number>(1);
+    const [exp, setExp] = useState<number>(0);
     //rabz kebabz solution to ensure that the username displayed on the Home Screen is accurate.
     //tried using setEffect but caused username not to update on logout.
     if (storedUsername !== username) {
         setUsername(storedUsername);
     }
+
+    const runFetchLevel = async () => {
+        try {
+            const userId = await SecureStore.getItem("id");
+            const getLink = backendLink + "/api/user/" + userId + "/level";
+            const response = await fetch(getLink, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const userLevel = await response.json();
+
+            setLevel(userLevel.level);
+            setExp(userLevel.exp);
+        } catch (err) {
+            console.error("Error fetching level", err);
+        }
+    };
 
     const runFetchHobbies = async () => {
         try {
@@ -50,41 +78,58 @@ export default function HomeScreen() {
 
     useFocusEffect(
         useCallback(() => {
+            runFetchLevel();
             runFetchHobbies(); // Fetch hobbies whenever the screen gains focus
         }, [])
     );
 
     const renderHobbyCard = ({ item }) => <HobbyCard hobby={item} />;
 
-    if (hobbies.length === 0) {
-        return (
-            <ImageBackground source={Background} style={styles.background}>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>
-                        Welcome Home, {username}!
+    return loading ? (
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <Text> Loading...</Text>
+        </View>
+    ) : error ? (
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <Text>Error! {error}</Text>
+        </View>
+    ) : (
+        <ImageBackground source={Background} style={styles.background}>
+            <View style={styles.header}>
+                <Text style={styles.headerText}>Welcome Home, {username}!</Text>
+            </View>
+            <View style={styles.level}>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginBottom: 3,
+                    }}
+                >
+                    <Text style={[styles.levelText, { fontWeight: "bold" }]}>
+                        {level}
+                    </Text>
+                    <Text style={[styles.levelText, { fontWeight: "bold" }]}>
+                        {`${exp} / ${levelUpExp(level)}`}
+                    </Text>
+                    <Text style={[styles.levelText, { fontWeight: "bold" }]}>
+                        {level + 1}
                     </Text>
                 </View>
-                <View style={styles.root}>
-                    <Text> No Hobbies. Click on create to make some!</Text>
-                </View>
-            </ImageBackground>
-        );
-    } else {
-        return loading ? (
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <Text> Loading...</Text>
+                <RainbowProgressBar progress={exp / levelUpExp(level)} />
+                <View
+                    style={{
+                        marginVertical: 5,
+                        flexDirection: "row-reverse",
+                        justifyContent: "space-between",
+                    }}
+                ></View>
             </View>
-        ) : error ? (
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <Text>Error! {error}</Text>
-            </View>
-        ) : (
-            <ImageBackground source={Background} style={styles.background}>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>
-                        Welcome Home, {username}!
-                    </Text>
+            {hobbies.length === 0 ? (
+                <View style={[styles.root, {alignItems: "center"}]} >
+                    <Text> No Hobbies. Click on create to get started!</Text>
                 </View>
+            ) : (
                 <View style={styles.root}>
                     <FlatList
                         data={hobbies}
@@ -92,9 +137,9 @@ export default function HomeScreen() {
                         keyExtractor={(item) => item._id}
                     />
                 </View>
-            </ImageBackground>
-        );
-    }
+            )}
+        </ImageBackground>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -105,7 +150,7 @@ const styles = StyleSheet.create({
     },
     root: {
         width: "100%",
-        height: "100%",
+        height: "90%",
         paddingBottom: 200,
         paddingHorizontal: "7%",
     },
@@ -114,11 +159,14 @@ const styles = StyleSheet.create({
         height: "10%",
         marginTop: 120,
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
         paddingLeft: 20,
         paddingRight: 20,
     },
+    level: {
+        width: "80%",
+    },
+    levelText: {},
     icon: {
         height: "50%",
         width: "50%",
@@ -127,6 +175,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         elevation: 5,
+        marginTop: 10,
     },
     headerIcon: {
         height: 15,

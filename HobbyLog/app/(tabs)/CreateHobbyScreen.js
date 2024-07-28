@@ -2,38 +2,45 @@ import React, { useState } from "react";
 import {
     View,
     Text,
+    ScrollView,
     StyleSheet,
     ImageBackground,
     TouchableOpacity,
     TextInput,
+    Button,
     FlatList,
     Image,
-    Alert,
-    Pressable,
 } from "react-native";
 import { useRouter } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
 import Background from "@/assets/images/defaultBackground.png";
+import * as ImagePicker from 'expo-image-picker';
 import AddGoalModal from "@/components/HobbyCreation/AddGoalModal";
 import AddTaskModal from "@/components/HobbyCreation/AddTaskModal";
 import { AntDesign } from '@expo/vector-icons';
+import sortGoalsByDeadline from "@/functions/sortGoalsByDeadline";
+
+
 import { backendLink } from "@/constants/constants";
-import placeholderImage from "@/assets/images/placeholder.png";
 
 export default function CreateHobbyScreen() {
     const createLink = backendLink + "/api/hobby/create";
     const router = useRouter();
     const [goals, setGoals] = useState([]);
     const [tasks, setTasks] = useState([]);
+    const [journals, setJournals] = useState([]); 
+    const [newJournal, setNewJournal] = useState("");
+    const [journalModal, showJournalModal] = useState(false);
     const [goalModalGoal, setGoalModalGoal] = useState();
     const [taskModalTask, setTaskModalTask] = useState();
     const [goalModal, showGoalModal] = useState(false);
     const [taskModal, showTaskModal] = useState(false);
+    const [image, setImage] = useState(null);
 
     const closeGoalModal = () => {
         setGoalModalGoal(undefined);
         showGoalModal(false);
     };
+
     const closeTaskModal = () => {
         setTaskModalTask(undefined);
         showTaskModal(false);
@@ -44,6 +51,7 @@ export default function CreateHobbyScreen() {
         description: "",
         deadline: new Date(),
         completed: false,
+        exp: 0,
     });
     const [newTask, setNewTask] = useState({
         name: "",
@@ -60,13 +68,27 @@ export default function CreateHobbyScreen() {
         tasks: [],
     });
 
-    const [hobbyImage, setHobbyImage] = useState(placeholderImage);
+
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        if (!result.cancelled) {
+            setImage(result.uri);
+        }
+    };
 
     const handleSubmitHobby = async () => {
+        const newGoals = sortGoalsByDeadline(goals);
         const data = {
             hobbyName: hobby.name,
             hobbyDescription: hobby.description,
-            goals: goals,
+            goals: newGoals,
             tasks: tasks,
         };
 
@@ -109,6 +131,7 @@ export default function CreateHobbyScreen() {
                 description: "",
                 deadline: new Date(),
                 completed: false,
+                exp: 0,
             });
             handleInputChange("goals", updatedGoals);
         }
@@ -137,6 +160,19 @@ export default function CreateHobbyScreen() {
         }));
     };
 
+    const addJournal = () => {
+        if (newJournal !== "") {
+            const updatedJournals = [...journals, newJournal];
+            setJournals(updatedJournals);
+            setNewJournal("");
+        }
+    };
+    
+    const navigateToAddJournal = () => {
+        showJournalModal(true);
+    };
+    
+
     const navigateToAddGoal = (index) => {
         const selectedGoal = goals[index];
         setGoalModalGoal(selectedGoal);
@@ -149,32 +185,20 @@ export default function CreateHobbyScreen() {
         showTaskModal(true);
     };
 
-    const pickImage = async () => {
-        const permissionResult =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            Alert.alert(
-                "Permission Denied",
-                "You've refused to allow this app to access your photos!"
-            );
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setHobbyImage(result.uri);
-        }
-    };
     return (
         <ImageBackground source={Background} style={styles.background}>
             <View style={styles.root}>
+
+            <View style={styles.profilePicContainer}>
+                    <TouchableOpacity onPress={pickImage}>
+                        <Image
+                            source={image ? { uri: image } : require("@/assets/images/placeholder.png")}
+                            style={styles.profilePic}
+                        />
+                        <Text style={styles.editImageText}>Edit Hobby Image</Text>
+                    </TouchableOpacity>
+                </View>
+
                 <View style={styles.box}>
                     <TextInput
                         textAlign="center"
@@ -322,11 +346,56 @@ export default function CreateHobbyScreen() {
                 tasks={tasks}
                 setTasks={setTasks}
             />
+
+<View style={styles.listContainer} backgroundColor="#fffdd0"> {/* Yellow background */}
+    <Text style={{ fontSize: 15, marginBottom: 4, fontWeight: "bold" }}>Journals:</Text>
+    {journals.length > 0 ? (
+        <FlatList
+            style={styles.list}
+            data={journals}
+            renderItem={({ item }) => (
+                <View style={styles.card}>
+                    <Text style={{ fontSize: 18, marginBottom: 1 }}>
+                        • {item}
+                    </Text>
+                </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+        />
+    ) : (
+        <Text style={{ color: "grey" }}>No journal entries yet. Add a new entry!</Text>
+    )}
+    <TouchableOpacity
+        style={styles.goalButton}
+        onPress={navigateToAddJournal}
+    >
+        <AntDesign name="pluscircle" size={20} color="black" />
+    </TouchableOpacity>
+</View>
+
         </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+
+    profilePicContainer: {
+        alignItems: 'center',
+        marginVertical: 20,
+    },
+    profilePic: {
+        width: 120,
+        height: 120,
+        borderRadius: 60, 
+        borderWidth: 3,
+        borderColor: 'white',
+    },
+    editImageText: {
+        color: '#333',
+        fontSize: 15,
+        marginTop: 8,
+        fontWeight: 'bold',
+    },
     scrollview: {
         width: "100%",
         height: "100%",

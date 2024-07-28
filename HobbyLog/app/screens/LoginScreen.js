@@ -28,36 +28,44 @@ export default function LoginScreen({ registrationSuccess = false }) {
 
     const onSignInPressed = async () => {
         displayLoginFail(false);
-        const response = CallLogin(email, password);
-        response
-            .then(async (response) => {
-                const data = await response.json();
-                console.log(data);
-                if (response.ok && data.username) {
-                    SecureStore.setItemAsync("email", email);
-                    SecureStore.setItemAsync("password", password);
-                    //ping server for username and get it
-                    SecureStore.setItemAsync("username", data.username);
-                    SecureStore.setItemAsync("id", data.id);
-                    router.dismissAll();
-                    router.replace("../(tabs)/HomeScreen");
-                } else {
-                    console.log(response.ok);
-                    console.log(data.username);
-                    displayLoginFail(true);
-                }
-            })
-            .catch((error) => {
-                console.log("Login failed", error);
+
+        if (!email) {
+            displayNoEmailWarning(true);
+            return;
+        }
+        
+        if (password.length <= 6) {
+            displayShortPasswordWarning(true);
+            return;
+        }
+
+        try {
+            const response = await CallLogin(email, password);
+
+            if (response && response.username) {
+                await SecureStore.setItemAsync("email", email);
+                await SecureStore.setItemAsync("password", password);
+                await SecureStore.setItemAsync("username", response.username);
+                await SecureStore.setItemAsync("id", response.id);
+                router.dismissAll();
+                router.replace("../(tabs)/HomeScreen");
+            } else {
                 displayLoginFail(true);
-            });
+            }
+        } catch (error) {
+            console.error("Login failed", error);
+            displayLoginFail(true);
+        }
     };
+
     const onForgotPasswordPressed = () => {
         router.replace("./ForgotPasswordScreen");
     };
+
     const onSignUpPressed = () => {
         router.replace("./SignUpScreen");
     };
+
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
             <ImageBackground
@@ -88,13 +96,7 @@ export default function LoginScreen({ registrationSuccess = false }) {
 
                     <CustomButton
                         text="Sign In!"
-                        onPress={() => {
-                            displayNoEmailWarning(email === "");
-                            displayShortPasswordWarning(password.length <= 6);
-                            if (!emailNotFilled && password.length > 6) {
-                                onSignInPressed();
-                            }
-                        }}
+                        onPress={onSignInPressed}
                     />
 
                     <View>
@@ -149,5 +151,8 @@ const styles = StyleSheet.create({
     logo: {
         resizeMode: "cover",
     },
-    warning: {},
+    warning: {
+        color: 'red', 
+        marginTop: 10,
+    },
 });

@@ -43,7 +43,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
         ) => {
             try {
                 const response = await fetch(
-                    `${backendLink}/api/hobby/${goalId}/${
+                    `${backendLink}/api/goal/${goalId}/${
                         complete ? "markIncomplete" : "markComplete"
                     }`,
                     {
@@ -74,7 +74,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
             <TouchableOpacity
                 onPress={() =>
                     router.push({
-                        pathname: "EditHobbyPage",
+                        pathname: "EditHobbyScreen",
                         params: { hobbyId: hobbyId },
                     })
                 }
@@ -105,7 +105,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                                             ? {
                                                   backgroundColor: "#673147",
                                               }
-                                            : { backgroundColor: "#DE3163", },
+                                            : { backgroundColor: "#DE3163" },
                                     ]}
                                 ></View>
                             ) : (
@@ -180,6 +180,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                                             item.deadline
                                         ).toLocaleDateString()}
                                     </Text>
+                                    <Text>Reward: {item.exp} exp</Text>
                                 </View>
                             </View>
                         )}
@@ -231,6 +232,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                                         </Text>
                                         <Text>{item.description}</Text>
                                         <Text>Frequency: {item.frequency}</Text>
+                                        <Text>Exp: {item.exp}</Text>
                                     </View>
                                 </TouchableOpacity>
                             )}
@@ -319,7 +321,6 @@ const progressBar = StyleSheet.create({
         borderRadius: 3,
     },
     progress: {
-        
         height: 10,
         borderRadius: 3,
     },

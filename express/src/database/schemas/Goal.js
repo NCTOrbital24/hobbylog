@@ -1,15 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const goalSchema = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
-    hobbyId: { type: Schema.Types.ObjectId, ref: 'Hobby', required: true },
+    hobbyId: { type: Schema.Types.ObjectId, ref: "Hobby", required: true },
     deadline: { type: Date, required: true },
-    completed: {type: Boolean, required: true, default: false}
+    completed: { type: Boolean, required: true, default: false },
+    exp: { type: Number, required: true, default: 0 },
+    expClaimed: { type: Boolean, required: true, default: false },
     //badge: { type: Schema.Types.ObjectId, ref: 'Badge'}
 });
 
-const Goal = mongoose.model('Goal', goalSchema);
+const Goal = mongoose.model("Goal", goalSchema);
 
 module.exports = Goal;

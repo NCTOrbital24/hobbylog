@@ -17,15 +17,25 @@ export default function AddGoalModal({
     goals,
     setGoals,
 }) {
-    const initialGoal = { name: "", description: "", deadline: null };
-    const [editedGoal, setEditedGoal] = useState({ ...initialGoal });
+    const initialGoal = { name: "", description: "", deadline: null, exp: 0 };
+    const [editedGoal, setEditedGoal] = useState(initialGoal);
     const [open, setOpen] = useState(false);
-    const [dateConfirmed, setDateConfirmed] = useState(false);
     const [date, setDate] = useState(editedGoal.deadline || new Date());
+    const [dateConfirmed, setDateConfirmed] = useState(
+        editedGoal.deadline ? true : false
+    );
     const [error, showError] = useState(false);
 
     useEffect(() => {
-        setEditedGoal({ ...goal });
+        if (goal) {
+            setEditedGoal({ ...goal });
+            setDate(goal.deadline ? new Date(goal.deadline) : new Date());
+            setDateConfirmed(!!goal.deadline);
+        } else {
+            setEditedGoal({ ...initialGoal });
+            setDate(new Date());
+            setDateConfirmed(false);
+        }
     }, [goal]);
 
     const handleInputChange = (name, value) => {
@@ -40,7 +50,11 @@ export default function AddGoalModal({
     }
 
     function checkValidGoal() {
-        return editedGoal.name && editedGoal.name !== "" && isValidDate(editedGoal.deadline);
+        return (
+            editedGoal.name &&
+            editedGoal.name !== "" &&
+            isValidDate(editedGoal.deadline)
+        );
     }
 
     const saveGoal = () => {
@@ -111,7 +125,7 @@ export default function AddGoalModal({
                             mode="date"
                             display="default"
                             onChange={(event, selectedDate) => {
-                                if (event.type === 'set') {
+                                if (event.type === "set") {
                                     const currentDate =
                                         selectedDate || editedGoal.deadline;
                                     setDate(currentDate);
@@ -128,6 +142,15 @@ export default function AddGoalModal({
                             }}
                         />
                     )}
+                    <TextInput
+                        value={"Exp Reward: " + String(editedGoal.exp)}
+                        onChangeText={(text) =>
+                            handleInputChange("exp", Number(text))
+                        }
+                        style={styles.input}
+                        placeholder="Exp reward"
+                        keyboardType="numeric"
+                    />
                     {error && <Text>Invalid Goal!</Text>}
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
@@ -147,8 +170,7 @@ export default function AddGoalModal({
                             onPress={() => {
                                 showError(false);
                                 closeModal();
-                            }
-                            }
+                            }}
                         >
                             <Text style={styles.buttonText}>Close</Text>
                         </TouchableOpacity>
@@ -178,7 +200,7 @@ const styles = StyleSheet.create({
         width: "80%",
         fontSize: 20,
         color: "black",
-        textAlign: "center"
+        textAlign: "center",
     },
     deadlineText: {
         fontSize: 20,
