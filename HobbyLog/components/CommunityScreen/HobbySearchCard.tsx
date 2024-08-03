@@ -33,7 +33,11 @@ export default function HobbySearchCard({
         >
             <View style={styles.card}>
                 <View style={styles.icon}>
-                    {/* TODO: IMAGE STUFF GOES HERE */}
+                <Image 
+                        source={{ uri: "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting" }}
+                        style = {styles.image}
+/>
+
                 </View>
                 <View style={styles.info}>
                     <View style={styles.goalText}>
@@ -76,11 +80,15 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     icon: {
-        backgroundColor: "yellow",
+        backgroundColor: "pink",
         width: 60,
         height: 60,
         borderRadius: 30,
     },
+    image: {
+        width: '100%',
+        height: '100%',
+      },
     info: {
         paddingLeft: 8,
         height: 60,

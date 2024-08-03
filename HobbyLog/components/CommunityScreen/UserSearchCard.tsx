@@ -26,7 +26,7 @@ export default function UserSearchCard({
             const response = await fetch(
                 `${backendLink}/api/friend/${_id}/add`,
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },

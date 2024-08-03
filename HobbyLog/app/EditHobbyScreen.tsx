@@ -250,8 +250,13 @@ export default function EditHobbyPage() {
                             style={styles.profilePic}
                         />
                     ) : (
-                        <View style={styles.placeholderImage}>
-                            <Text>Tap to add an image</Text>
+                            <View style={styles.placeholderImage}>
+                                 <Image 
+        source={{ uri: "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting" }}
+                                    style={styles.image}
+                                />
+                                
+                            
                         </View>
                     )}
                 </TouchableOpacity>
@@ -765,10 +770,16 @@ const styles = StyleSheet.create({
     placeholderImage: {
         width: "100%",
         height: "100%",
-        backgroundColor: "#e1e1e1",
+        backgroundColor: "pink",
         justifyContent: "center",
         alignItems: "center",
     },
+
+    image: {
+        width: '100%',
+        height: '100%',
+      },
+
 
     journalContainer: {
         backgroundColor: "#FFFACD", // Light yellow color

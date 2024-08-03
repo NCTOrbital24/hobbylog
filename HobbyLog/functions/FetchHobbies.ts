@@ -19,8 +19,6 @@ export default async function fetchHobbies(setHobbies, userId) {
 
     const hobbiesData = await response.json();
 
-    console.log(hobbiesData);
-
     const updatedHobbiesData = parseHobby(hobbiesData);
 
     setHobbies(updatedHobbiesData);

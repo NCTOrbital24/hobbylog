@@ -177,11 +177,11 @@ export default function AddTaskModal({
                     )}
                     <TextInput
                         value={exp}
-                        onChangeText={(text) => {
+                        onChangeText={(value) => {
                             const parsedValue = parseInt(value, 10);
                             setExp(value);
                             if (!isNaN(parsedValue) || value === "") {
-                                handleInputChange("exp", Number(text));
+                                handleInputChange("exp", Number(value));
                             }
                         }}
                         style={styles.input}

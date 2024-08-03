@@ -50,12 +50,13 @@ export default function UserCommunityScreen() {
             const response = await fetch(
                 `${backendLink}/api/friend/${userId}/add`,
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
                 }
             );
+            console.log(response.status);
             if (!response.ok) {
                 throw new Error("Failed to add friend");
             }

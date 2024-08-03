@@ -196,6 +196,7 @@ router.post("/create", isAuthenticated, async (req, res) => {
                 description: taskData.description,
                 hobbyId: savedHobby._id,
                 frequency: taskData.frequency,
+                nextDueDate: taskData.nextDueDate,
             });
 
             const savedTask = await newTask.save();
@@ -215,7 +216,7 @@ router.post("/create", isAuthenticated, async (req, res) => {
     }
 });
 
-router.get("/:hobbyId/get", isAuthenticated, async (req, res) => {
+router.get("/:hobbyId/get", async (req, res) => {
     const hobbyId = req.params.hobbyId;
 
     try {
@@ -225,12 +226,6 @@ router.get("/:hobbyId/get", isAuthenticated, async (req, res) => {
 
         if (!hobby) {
             return res.status(404).json({ message: "Hobby not found" });
-        }
-
-        // Check if the hobby belongs to the authenticated user
-        const user = req.user;
-        if (!user.hobbies.includes(hobbyId.toString())) {
-            return res.status(403).json({ message: "Unauthorized to access this hobby" });
         }
 
         res.status(200).json(hobby);
@@ -261,7 +256,11 @@ router.put("/:hobbyId/update", isAuthenticated, async (req, res) => {
         // Update hobby fields
         hobby.name = name;
         hobby.description = description;
-        hobby.profilePic = profilePic;
+        /*
+        if (profilePic) {
+            hobby.profilePic = profilePic;
+        }
+        */
 
         // Update or add goals
         const updatedGoals = await Promise.all(

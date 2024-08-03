@@ -23,6 +23,7 @@ router.put("/:userId/add", isAuthenticated, async (req, res) => {
 
         // Save both users
         await user.save();
+        console.log("friend made!");
 
         res.status(200).json({ message: "Friend added successfully" });
     } catch (error) {

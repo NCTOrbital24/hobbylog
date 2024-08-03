@@ -12,6 +12,7 @@ import { Hobby } from "../../functions/HobbyConstructor";
 import { useRouter } from "expo-router";
 import Checkbox from "../Checkbox";
 import { backendLink } from "@/constants/constants";
+import Placeholder from "@/assets/images/placeholder.png";
 
 export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     const router = useRouter();
@@ -25,10 +26,11 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     const checkboxArray = [...goals].map((goal) => goal.completed);
     const taskCheckboxArray = [...tasks].map((task) => {
         const lastDueDate = new Date(task.lastDueDate);
-        return lastDueDate > (new Date());
-    })
+        return lastDueDate > new Date();
+    });
 
-    const [taskCheckbox, setTaskCheckbox] = useState<Array<boolean>>(taskCheckboxArray);
+    const [taskCheckbox, setTaskCheckbox] =
+        useState<Array<boolean>>(taskCheckboxArray);
     const [checkbox, setCheckbox] = useState<Array<boolean>>(checkboxArray);
 
     for (let i = 0; i < goals.length; i++) {
@@ -44,7 +46,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
         const taskId = tasks[index]._id;
         const markTaskAsCompleted = async (
             taskId: string,
-            complete: boolean,
+            complete: boolean
         ) => {
             try {
                 const response = await fetch(
@@ -64,13 +66,13 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                 const task = tasks[index];
                 const now = new Date();
                 task.lastCompleted = task.nextDueDate;
-                if (task.frequency === 'daily') {
+                if (task.frequency === "daily") {
                     task.nextDueDate = new Date(now.setDate(now.getDate() + 1));
                 }
-                if (task.frequency === 'weekly') {
+                if (task.frequency === "weekly") {
                     task.nextDueDate = new Date(now.setDate(now.getDate() + 7));
                 }
-                if (task.frequency === 'monthly') {
+                if (task.frequency === "monthly") {
                     task.nextDueDate = new Date(now.setDate(now.getDate() + 1));
                 }
             } catch (err) {
@@ -78,7 +80,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
             }
         };
         markTaskAsCompleted(taskId, true);
-    }
+    };
 
     const handleGoalChecked = (value, index) => {
         const newCheckbox = [...checkbox];
@@ -127,12 +129,12 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                 }
             >
                 <View style={styles.header}>
-                    <View style={image.icon}>
+                    <View style={styles.icon}>
                         <Image
-                            style={image.dp}
                             source={{
-                                uri: "https://upload.wikimedia.org/wikipedia/commons/6/62/240329_Kim_Chae-won_%281%29.jpg",
+                                uri: "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting",
                             }}
+                            style={styles.image}
                         />
                     </View>
                     <View style={styles.titleContainer}>
@@ -258,31 +260,39 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                             style={styles.list}
                             data={tasks}
                             renderItem={({ item, index }) => (
-                                    <View
-                                        style={styles.card}
-                                >
+                                <View style={styles.taskCard}>
                                     <Checkbox
                                         value={taskCheckbox[index]}
                                         onValueChange={(value) => {
-                                            handleTaskChecked();
+                                            handleTaskChecked(value, index);
                                         }}
                                         size={18}
                                         color={"black"}
                                         style={styles.checkbox}
                                         pressable={true}
                                     />
+                                    <View style={{ flex: 1, paddingLeft: 8 }}>
                                         <Text
-                                            style={{
-                                                fontSize: 18,
-                                                marginBottom: 5,
-                                            }}
+                                            style={[
+                                                {
+                                                    fontSize: 18,
+                                                    marginBottom: 1,
+                                                },
+                                                checkbox[index]
+                                                    ? {
+                                                          textDecorationLine:
+                                                              "line-through",
+                                                      }
+                                                    : null,
+                                            ]}
                                         >
-                                            •{" " + item.name}
+                                            {item.name}
                                         </Text>
                                         <Text>{item.description}</Text>
                                         <Text>Frequency: {item.frequency}</Text>
                                         <Text>Exp: {item.exp}</Text>
                                     </View>
+                                </View>
                             )}
                             keyExtractor={(item, index) => index.toString()}
                         />
@@ -331,6 +341,15 @@ const styles = StyleSheet.create({
         marginBottom: 7,
         flexDirection: "row",
     },
+    taskCard: {
+        backgroundColor: "#F2E6FF",
+        color: "#141414",
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginBottom: 7,
+        flexDirection: "row",
+    },
     wrapper: {
         backgroundColor: "#FFF8DC",
         justifyContent: "space-between",
@@ -356,6 +375,18 @@ const styles = StyleSheet.create({
     },
     checkbox: {
         paddingTop: 4,
+    },
+
+    image: {
+        width: "100%",
+        height: "100%",
+    },
+
+    icon: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        backgroundColor: "pink",
     },
 });
 

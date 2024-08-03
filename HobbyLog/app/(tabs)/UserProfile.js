@@ -20,8 +20,8 @@ export default function UserProfile() {
         username: "",
         hobbies: "",
         bio: "",
-        profileImage:
-            "https://6.soompi.io/wp-content/uploads/image/a7d15834c0204c7f9d0f04b0b5302acf/dummy.jpeg?s=900x600&e=t",
+        profileImage: "https://6.soompi.io/wp-content/uploads/image/a7d15834c0204c7f9d0f04b0b5302acf/dummy.jpeg?s=900x600&e=t",
+            
     });
     const [selectedImage, setSelectedImage] = useState(null);
 

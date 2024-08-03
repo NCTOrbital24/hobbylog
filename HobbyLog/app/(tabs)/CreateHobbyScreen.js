@@ -99,6 +99,8 @@ export default function CreateHobbyScreen() {
            profilePic: image,
        };
 
+       console.log(data);
+
 
        try {
            const response = await fetch(createLink, {
