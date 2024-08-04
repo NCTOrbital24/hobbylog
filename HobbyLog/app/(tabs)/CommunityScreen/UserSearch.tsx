@@ -13,12 +13,6 @@ import UserSearchCard from "@/components/CommunityScreen/UserSearchCard";
 import { backendLink } from "@/constants/constants";
 
 export default function UserSearch() {
-    const testUser = {
-        _id: "userid",
-        name: "username",
-        icon: "https://pbs.twimg.com/profile_images/1512898257902579717/sUi7n5Pi_400x400.jpg",
-        isFriend: true,
-    };
     const testUserArray = [];
     //! RUDIMENTARY TEST TO MAKE SURE CARDS ARE RENDERING.
 

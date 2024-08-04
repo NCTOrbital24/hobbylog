@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     StyleSheet,
@@ -10,24 +10,51 @@ import {
 import Background from "@/assets/images/defaultBackground.png";
 import { AntDesign } from "@expo/vector-icons";
 import UserSearchCard from "@/components/CommunityScreen/UserSearchCard";
+import { backendLink } from "@/constants/constants";
+import * as SecureStore from "expo-secure-store";
+import { useFocusEffect } from "expo-router";
 
 export default function FriendSearch() {
-    const testFriend = {
-        _id: "userid",
-        name: "username",
-        icon: "https://pbs.twimg.com/profile_images/1512898257902579717/sUi7n5Pi_400x400.jpg",
-        isFriend: true,
-    };
-    const testFriendArray = [testFriend];
-    //! RUDIMENTARY TEST TO MAKE SURE CARDS ARE RENDERING.
-
+    const id = SecureStore.getItem("id");
     const [searchText, setSearchText] = useState("");
-    const [friendArray, setFriendArray] = useState<Array<any>>(testFriendArray);
+    const [friendArray, setFriendArray] = useState<Array<any>>([]);
     // * ARRAY THAT IS CHANGED WHEN SEARCHED, AND THEN RENDERED
 
     const renderFriendSearchResult = (userInfo) => (
         <UserSearchCard userInfo={userInfo} hideTick={true} />
     ); //? IS IT BETTER TO HAVE A FRIENDSEARHCARD?
+
+    const searchFriends = async () => {
+        try {
+            const response = await fetch(
+                `${backendLink}/api/user/${id}/friends`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const friends = await response.json();
+            setFriendArray(friends);
+        } catch (err) {
+            console.error("Error fetching friends", err);
+        }
+    };
+
+    useEffect(() => {
+        searchFriends();
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            searchFriends();
+        }, [])
+    );
 
     const handleFriendSearch = () => {
         console.log("searching for:", searchText);
@@ -57,7 +84,7 @@ export default function FriendSearch() {
                 <View style={styles.body}>
                     <FlatList
                         data={friendArray}
-                        renderItem={({ item }) => 
+                        renderItem={({ item }) =>
                             renderFriendSearchResult(item)
                         }
                         keyExtractor={(item) => item._id}

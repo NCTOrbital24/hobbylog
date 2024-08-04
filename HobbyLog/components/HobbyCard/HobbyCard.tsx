@@ -12,7 +12,6 @@ import { Hobby } from "../../functions/HobbyConstructor";
 import { useRouter } from "expo-router";
 import Checkbox from "../Checkbox";
 import { backendLink } from "@/constants/constants";
-import Placeholder from "@/assets/images/placeholder.png";
 
 export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     const router = useRouter();

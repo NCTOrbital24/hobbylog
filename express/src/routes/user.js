@@ -25,6 +25,7 @@ router.get("/:userId/level", isAuthenticated, async (req, res) => {
 });
 
 router.get("/:userId/friends", isAuthenticated, async (req, res) => {
+    const userId = req.params.userId;
     try {
         // Find the user by ID
         const user = await User.findById(userId).populate({
