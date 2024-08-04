@@ -23,7 +23,6 @@ export default function TabLayout() {
             screenOptions={{
                 tabBarStyle: styles.tabBar,
                 tabBarActiveTintColor: "#3c3c3c",
-                headerShown: false,
                 tabBarIndicatorStyle: { backgroundColor: "#8B8000" },
             }}
         >

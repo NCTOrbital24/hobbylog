@@ -28,16 +28,6 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="HobbyScreen"
-                options={{
-                    href: "/HobbyScreen",
-                    title: "Hobbies",
-                    tabBarIcon: ({ color }) => (
-                        <AntDesign name="smileo" size={24} color={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
                 name="CreateHobbyScreen"
                 options={{
                     href: "/CreateHobbyScreen",

@@ -56,29 +56,10 @@ export default function FriendSearch() {
         }, [])
     );
 
-    const handleFriendSearch = () => {
-        console.log("searching for:", searchText);
-    }; //TODO: HANDLE SEARCH LOL
-
     return (
         <ImageBackground source={Background} style={styles.background}>
             <SafeAreaView style={styles.wrapper}>
                 <View style={styles.searchBar}>
-                    <AntDesign
-                        name="search1"
-                        size={24}
-                        color="black"
-                        style={{ marginTop: 3, marginRight: 4 }}
-                    />
-                    <TextInput
-                        style={styles.searchText}
-                        onChangeText={(text) => {
-                            setSearchText(text);
-                            handleFriendSearch();
-                        }}
-                        placeholder="Search for a friend!."
-                        value={searchText}
-                    />
                 </View>
                 <View style={styles.line}></View>
                 <View style={styles.body}>

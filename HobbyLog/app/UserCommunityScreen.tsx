@@ -20,22 +20,13 @@ import { FontAwesome6, AntDesign } from "@expo/vector-icons";
 
 export default function UserCommunityScreen() {
     const router = useRouter();
-    const { userId } = useLocalSearchParams();
+    const { username } = useLocalSearchParams();
     const [user, setUser] = useState(null);
     const [showFriendSucessModal, setShowFriendSuccessModal] = useState(false);
     const [profile, setProfile] = useState({
         username: "",
-        userId: userId,
+        userId: "",
         hobbies: [
-            {
-                _id: "hey",
-                name: "hobbyName",
-                description: "hobbyDescription",
-                icon: "hobbyIcon",
-                owner: "hobbyOwner",
-                goalsLength: 1,
-                tasksLength: 1,
-            },
         ],
         bio: "",
         profileImage:
@@ -68,7 +59,7 @@ export default function UserCommunityScreen() {
 
     const getProfile = async () => {
         try {
-            const result = await fetchProfile(userId);
+            const result = await fetchProfile(username);
             setProfile(result);
         } catch (error) {
             console.error("Error fetching profile:", error);

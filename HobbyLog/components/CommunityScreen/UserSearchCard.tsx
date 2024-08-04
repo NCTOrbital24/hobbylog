@@ -47,7 +47,7 @@ export default function UserSearchCard({
                 onPress={() =>
                     router.push({
                         pathname: "UserCommunityScreen",
-                        params: { userId: _id },
+                        params: { username: username },
                     })
                 }
                 style={{ flexDirection: "row" }}

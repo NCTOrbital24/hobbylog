@@ -11,7 +11,7 @@ const hobbyRoute = require("./routes/hobby");
 const goalRoute = require("./routes/goal");
 const userRoute = require("./routes/user");
 const friendRoute = require("./routes/friend");
-const profileRoute = require("./routes/profile"); 
+const profileRoute = require("./routes/userProfile"); 
 const searchRoute = require("./routes/search");
 
 require("./database");

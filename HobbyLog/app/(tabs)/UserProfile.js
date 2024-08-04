@@ -10,25 +10,30 @@ import {
     TouchableOpacity,
     Alert,
     TextInput,
+    Button,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Background from "@/assets/images/defaultBackground.png";
 import { uploadProfile, fetchProfile } from "@/functions/apiUser";
+import * as SecureStore from "expo-secure-store";
+import { router } from "expo-router";
 
 export default function UserProfile() {
     const [profile, setProfile] = useState({
         username: "",
         hobbies: "",
         bio: "",
-        profileImage: "https://6.soompi.io/wp-content/uploads/image/a7d15834c0204c7f9d0f04b0b5302acf/dummy.jpeg?s=900x600&e=t",
-            
+        profileImage:
+            "https://6.soompi.io/wp-content/uploads/image/a7d15834c0204c7f9d0f04b0b5302acf/dummy.jpeg?s=900x600&e=t",
     });
     const [selectedImage, setSelectedImage] = useState(null);
+
+    const username = SecureStore.getItem("username");
 
     useEffect(() => {
         const loadProfile = async () => {
             try {
-                const result = await fetchProfile("Soon Chaewon");
+                const result = await fetchProfile({ username });
                 setProfile(result);
             } catch (error) {
                 console.error("Error fetching profile:", error);
@@ -152,6 +157,17 @@ export default function UserProfile() {
                 >
                     <Text style={styles.uploadButtonText}>Upload Profile</Text>
                 </TouchableOpacity>
+                <Button
+                    title="logout"
+                    onPress={() => {
+                        SecureStore.deleteItemAsync("email");
+                        SecureStore.deleteItemAsync("password");
+                        //ping server for username and get it
+                        SecureStore.deleteItemAsync("username");
+                        SecureStore.deleteItemAsync("id");
+                        router.replace("../screens/LoginScreen");
+                    }}
+                />
             </View>
         </ImageBackground>
     );

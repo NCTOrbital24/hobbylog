@@ -33,11 +33,11 @@ export default function LoginScreen({ registrationSuccess = false }) {
             .then(async (response) => {
                 const data = await response.json();
                 if (response.ok && data.username) {
-                    SecureStore.setItemAsync("email", email);
-                    SecureStore.setItemAsync("password", password);
+                    SecureStore.setItem("email", email);
+                    SecureStore.setItem("password", password);
                     //ping server for username and get it
-                    SecureStore.setItemAsync("username", data.username);
-                    SecureStore.setItemAsync("id", data.id);
+                    SecureStore.setItem("username", data.username);
+                    SecureStore.setItem("id", data.id);
                     router.dismissAll();
                     router.replace("../(tabs)/HomeScreen");
                 } else {

@@ -39,7 +39,7 @@ export const fetchProfile = async (username) => {
     const response = await fetch(`${backendLink}/api/profile/${username}`);
 
     if (!response.ok) {
-      throw new Error('Error fetching profile');
+      throw new Error(`Error: ${response.status}`);
     }
 
     const result = await response.json();

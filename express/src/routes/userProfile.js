@@ -55,7 +55,7 @@ router.get('/:username', async (req, res) => {
        }
 
 
-       res.json(userProfile);
+       res.status(200).json(userProfile);
    } catch (error) {
        res.status(400).json({ message: error.message });
    }
