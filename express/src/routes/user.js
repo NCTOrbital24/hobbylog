@@ -31,14 +31,19 @@ router.get("/:userId/friends", isAuthenticated, async (req, res) => {
         const user = await User.findById(userId).populate({
             path: "friends",
             select: "username _id", // Only include username and _id
-        });
+        }).lean();
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
+        const tweakedFriends = user.friends.map(friend => ({
+            ...friend,
+            isFriend: true
+        }));
+
         // Return the friends array
-        res.status(200).json(user.friends);
+        res.status(200).json(tweakedFriends);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error" });

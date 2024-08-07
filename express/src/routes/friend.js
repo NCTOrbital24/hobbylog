@@ -32,4 +32,36 @@ router.put("/:userId/add", isAuthenticated, async (req, res) => {
     }
 });
 
+router.put("/:userId/remove", isAuthenticated, async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        // Find both users
+        const user = req.user;
+        const friend = await User.findById(userId);
+
+        if (!user || !friend) {
+            return res.status(404).json({ message: "User or Friend could not be found" });
+        }
+
+        // Check if they are already friends
+        if (!user.friends.includes(userId)) {
+            return res.status(400).json({ message: "Not friends" });
+        }
+
+        // Remove the friend
+        user.friends = user.friends.filter(friendId => friendId.toString() !== userId);
+
+        // Save the updated user
+        await user.save();
+        console.log("Friend removed!");
+
+        res.status(200).json({ message: "Friend removed successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
 module.exports = router;

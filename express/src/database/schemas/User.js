@@ -38,7 +38,14 @@ const userSchema = new mongoose.Schema({
         default: [],
     },
     exp: {type: Number, required: true, default: 0},
-    level: {type: Number, required: true, default: 1}
+    level: { type: Number, required: true, default: 1 },
+    bio: {
+        type: String,
+        default: "",
+    },
+    profileImage: {
+        type: String,
+    }
 });
 
 const User = mongoose.model("User", userSchema);

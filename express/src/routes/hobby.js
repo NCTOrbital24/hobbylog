@@ -1,5 +1,8 @@
 const { Router } = require("express");
 const passport = require("passport");
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const User = require("../database/schemas/User");
 const Hobby = require("../database/schemas/Hobby");
 const Goal = require("../database/schemas/Goal");
@@ -13,6 +16,33 @@ const removeOneGoal = require("../middleware/removeOneGoal");
 const removeOneTask = require("../middleware/removeOneTask");
 const sortHobbiesByClosestDeadline = require("../utils/sortHobbies");
 const router = Router();
+
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/"); // Correct path to 'uploads' directory
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, `${uniqueSuffix}${ext}`); // Use a unique suffix
+    },
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowedFileTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (allowedFileTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type, only JPEG and PNG are allowed!'), false);
+    }
+};
+
+const upload = multer({
+    limits: { fileSize: 800000 }, // Limit file size to 800KB
+    storage: storage,
+    fileFilter: fileFilter,
+});
 
 router.post("/clear", isAuthenticated, async (req, res) => {
     const { userId } = req.body;
@@ -150,8 +180,10 @@ router.post("/:hobbyId/goals/addAll", isAuthenticated, addAllGoals);
 
 router.post("/:hobbyId/tasks/addAll", isAuthenticated, addAllTasks);
 
-router.post("/create", isAuthenticated, async (req, res) => {
-    const { hobbyName, hobbyDescription, goals, tasks, profilePic} = req.body;
+router.post("/create", isAuthenticated, upload.single('hobbyImage'), async (req, res) => {
+    const { hobbyName, hobbyDescription, goals, tasks } = JSON.parse(req.body.data);
+    const hobbyImage = req.file ? `${req.file.filename}` : null;
+    console.log("hobby image:", hobbyImage);
 
     try {
         const user = req.user;
@@ -160,8 +192,6 @@ router.post("/create", isAuthenticated, async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        console.log("creating new hobby");
-
         const goalList = [];
         const taskList = [];
 
@@ -169,8 +199,12 @@ router.post("/create", isAuthenticated, async (req, res) => {
             name: hobbyName,
             description: hobbyDescription,
             user: user._id,
-            profilePic: profilePic,
         });
+
+        if (hobbyImage) {
+            newHobby.profileImage = hobbyImage;
+            console.log("NEW LINK:", newHobby.profileImage);
+        }
 
         const savedHobby = await newHobby.save();
         user.hobbies.push(savedHobby._id);
@@ -256,11 +290,6 @@ router.put("/:hobbyId/update", isAuthenticated, async (req, res) => {
         // Update hobby fields
         hobby.name = name;
         hobby.description = description;
-        /*
-        if (profilePic) {
-            hobby.profilePic = profilePic;
-        }
-        */
 
         // Update or add goals
         const updatedGoals = await Promise.all(

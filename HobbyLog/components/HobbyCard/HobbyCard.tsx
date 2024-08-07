@@ -12,6 +12,7 @@ import { Hobby } from "../../functions/HobbyConstructor";
 import { useRouter } from "expo-router";
 import Checkbox from "../Checkbox";
 import { backendLink } from "@/constants/constants";
+import fetchImage from "@/functions/fetchImage";
 
 export default function HobbyCard({ hobby }: { hobby: Hobby }) {
     const router = useRouter();
@@ -131,7 +132,7 @@ export default function HobbyCard({ hobby }: { hobby: Hobby }) {
                     <View style={styles.icon}>
                         <Image
                             source={{
-                                uri: "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting",
+                                uri: hobby.profileImage ? fetchImage(hobby.profileImage) : "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting",
                             }}
                             style={styles.image}
                         />
@@ -379,13 +380,15 @@ const styles = StyleSheet.create({
     image: {
         width: "100%",
         height: "100%",
+        borderRadius: 45,
     },
 
     icon: {
-        width: 100,
-        height: 100,
+        width: 90,
+        height: 90,
         borderRadius: 50,
         backgroundColor: "pink",
+        marginRight: 10,
     },
 });
 

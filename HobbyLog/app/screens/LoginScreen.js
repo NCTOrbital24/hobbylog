@@ -35,7 +35,6 @@ export default function LoginScreen({ registrationSuccess = false }) {
                 if (response.ok && data.username) {
                     SecureStore.setItem("email", email);
                     SecureStore.setItem("password", password);
-                    //ping server for username and get it
                     SecureStore.setItem("username", data.username);
                     SecureStore.setItem("id", data.id);
                     router.dismissAll();

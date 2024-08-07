@@ -1,42 +1,27 @@
-import { backendLink } from '@/constants/constants'; 
+import { backendLink } from '@/constants/constants';
 
-export const uploadProfile = async (profileData) => {
+export const uploadProfile = async (formData) => {
   try {
-    const formData = new FormData();
-    formData.append('username', profileData.username);
-    formData.append('hobbies', profileData.hobbies);
-    formData.append('bio', profileData.bio);
-
-    if (profileData.profileImage) {
-      const uriParts = profileData.profileImage.split('.');
-      const fileType = uriParts[uriParts.length - 1];
-      formData.append('profileImage', {
-        uri: profileData.profileImage,
-        name: `photo.${fileType}`,
-        type: `image/${fileType}`,
-      });
-    }
-
     const response = await fetch(`${backendLink}/api/profile`, {
       method: 'POST',
       body: formData,
     });
 
-    if (!response.ok) {
+    const ok = response.ok;
+
+    if (!ok) {
       throw new Error('Error uploading profile');
     }
-
-    const result = await response.json();
-    return result;
+    return ok;
   } catch (error) {
     console.error('Error uploading profile:', error);
     throw error;
   }
 };
 
-export const fetchProfile = async (username) => {
+export const fetchProfile = async (userId: string) => {
   try {
-    const response = await fetch(`${backendLink}/api/profile/${username}`);
+    const response = await fetch(`${backendLink}/api/profile/${userId}`);
 
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);

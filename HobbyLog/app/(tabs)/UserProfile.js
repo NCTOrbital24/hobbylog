@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     Text,
@@ -11,12 +11,15 @@ import {
     Alert,
     TextInput,
     Button,
+    FlatList,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Background from "@/assets/images/defaultBackground.png";
 import { uploadProfile, fetchProfile } from "@/functions/apiUser";
 import * as SecureStore from "expo-secure-store";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
+import HobbySearchCard from "@/components/CommunityScreen/HobbySearchCard";
+import fetchImage from "@/functions/fetchImage";
 
 export default function UserProfile() {
     const [profile, setProfile] = useState({
@@ -24,138 +27,84 @@ export default function UserProfile() {
         hobbies: "",
         bio: "",
         profileImage:
-            "https://6.soompi.io/wp-content/uploads/image/a7d15834c0204c7f9d0f04b0b5302acf/dummy.jpeg?s=900x600&e=t",
+            "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
     });
     const [selectedImage, setSelectedImage] = useState(null);
 
-    const username = SecureStore.getItem("username");
+    const id = SecureStore.getItem("id");
 
-    useEffect(() => {
-        const loadProfile = async () => {
-            try {
-                const result = await fetchProfile({ username });
-                setProfile(result);
-            } catch (error) {
-                console.error("Error fetching profile:", error);
-            }
-        };
+    useFocusEffect(
+        useCallback(() => {
+            const loadProfile = async () => {
+                try {
+                    const result = await fetchProfile(id);
+                    setProfile(result);
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                }
+            };
 
-        loadProfile();
-    }, []);
+            loadProfile();
+        }, [])
+    );
 
-    const handleInputChange = (name, value) => {
-        setProfile({
-            ...profile,
-            [name]: value,
-        });
-    };
-
-    const handleUploadProfile = async () => {
-        try {
-            const formData = new FormData();
-            formData.append("username", profile.username);
-            formData.append("hobbies", profile.hobbies);
-            formData.append("bio", profile.bio);
-            if (selectedImage) {
-                const uriParts = selectedImage.split(".");
-                const fileType = uriParts[uriParts.length - 1];
-                formData.append("profileImage", {
-                    uri: selectedImage,
-                    name: `photo.${fileType}`,
-                    type: `image/${fileType}`,
-                });
-            }
-
-            const result = await uploadProfile(formData);
-            Alert.alert(
-                "Profile Uploaded",
-                "Your profile has been uploaded successfully."
-            );
-            console.log(result);
-        } catch (error) {
-            console.error("Error uploading profile:", error);
-        }
-    };
-
-    const pickImage = async () => {
-        const permissionResult =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            Alert.alert(
-                "Permission Denied",
-                "You've refused to allow this app to access your photos!"
-            );
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setProfile({ ...profile, profileImage: result.uri });
-            setSelectedImage(result.uri);
-        }
+    const handleEditProfile = () => {
+        router.push("/screens/EditUserProfile");
     };
 
     return (
         <ImageBackground source={Background} style={styles.background}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.scrollContainer}>
                 <View style={styles.header}>
                     <Image
                         style={styles.userImg}
-                        source={{ uri: profile.profileImage }}
+                        source={{
+                            uri: profile.profileImage
+                                ? fetchImage(profile.profileImage)
+                                : "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
+                        }}
                     />
-                    <Pressable onPress={pickImage}>
-                        <Text style={styles.editText}>Edit profile image</Text>
-                    </Pressable>
                 </View>
-
-                <View style={styles.inputContainer}>
-                    <View style={styles.box}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter your username"
-                            value={profile.username}
-                            onChangeText={(text) =>
-                                handleInputChange("username", text)
-                            }
-                        />
-                    </View>
-                    <View style={styles.box}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter your hobbies"
-                            value={profile.hobbies}
-                            onChangeText={(text) =>
-                                handleInputChange("hobbies", text)
-                            }
-                        />
-                    </View>
-
-                    <View style={styles.box}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter your bio"
-                            value={profile.bio}
-                            onChangeText={(text) =>
-                                handleInputChange("bio", text)
-                            }
-                        />
-                    </View>
+                <View style={[styles.inputContainer, styles.details]}>
+                    <Text style={styles.username}>{profile.username}</Text>
+                    <Text style={styles.username}>Level: {profile.level}</Text>
+                    <Text style={styles.username}>Exp: {profile.exp}</Text>
                 </View>
-            </ScrollView>
-
+                <View style={{ height: "67%" }}>
+                    <FlatList
+                        data={[1]}
+                        renderItem={(item) => (
+                            <View style={styles.inputContainer}>
+                                <View style={styles.box}>
+                                    <Text style={styles.input}>
+                                        {profile.bio === ""
+                                            ? "No bio! Press the edit button to write one!"
+                                            : profile.bio}
+                                    </Text>
+                                </View>
+                                <View>
+                                    <FlatList
+                                        data={profile.hobbies}
+                                        renderItem={({ item }) => (
+                                            <HobbySearchCard
+                                                hobbyInfo={item}
+                                                color="#FFFDD0"
+                                            />
+                                        )}
+                                        keyExtractor={(item) => item._id}
+                                    />
+                                </View>
+                            </View>
+                        )}
+                    />
+                </View>
+            </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.uploadButton}
-                    onPress={handleUploadProfile}
+                    onPress={handleEditProfile}
                 >
-                    <Text style={styles.uploadButtonText}>Upload Profile</Text>
+                    <Text style={styles.uploadButtonText}>Edit Profile</Text>
                 </TouchableOpacity>
                 <Button
                     title="logout"
@@ -192,16 +141,19 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
     },
-    editText: {
+    details: {
+        marginBottom: 20,
+        paddingHorizontal: 20,
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    username: {
         fontSize: 16,
-        textAlign: "center",
-        color: "#6495ed",
-        marginTop: 10,
+        fontWeight: "bold",
     },
     inputContainer: {
         width: "100%",
-        paddingHorizontal: 20,
-        marginTop: 30,
+        paddingHorizontal: 10,
     },
     box: {
         backgroundColor: "#fffacd",
@@ -221,6 +173,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: "#ccc",
         paddingBottom: 5,
+        flexWrap: "wrap",
     },
     buttonContainer: {
         width: "100%",
@@ -234,6 +187,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fffacd",
         paddingVertical: 10,
         paddingHorizontal: 20,
+        marginBottom: 10,
         borderRadius: 5,
     },
     uploadButtonText: {

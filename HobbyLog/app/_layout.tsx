@@ -14,6 +14,7 @@ export default function RootLayout() {
                 <Stack.Screen name="screens/ForgotPasswordScreen" />
                 <Stack.Screen name="HobbyCommunityScreen" />
                 <Stack.Screen name="UserCommunityScreen" />
+                <Stack.Screen name="screens/EditUserProfile" />
             </Stack>
         </SafeAreaProvider>
     );

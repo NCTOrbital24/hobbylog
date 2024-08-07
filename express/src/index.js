@@ -13,6 +13,7 @@ const userRoute = require("./routes/user");
 const friendRoute = require("./routes/friend");
 const profileRoute = require("./routes/userProfile"); 
 const searchRoute = require("./routes/search");
+const imageRoute = require("./routes/image");
 
 require("./database");
 
@@ -52,5 +53,6 @@ app.use("/api/user", userRoute);
 app.use("/api/friend", friendRoute);
 app.use('/api/profile', profileRoute);
 app.use('/api/search', searchRoute);
+app.use('/api/image', imageRoute);
 
 app.listen(PORT, () => console.log(`Running Express Server on Port ${PORT}!`));

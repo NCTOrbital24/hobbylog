@@ -4,23 +4,27 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
 //! THIS CARD IS NOT SUPPOSED TO TAKE A HOBBY, BUT INSTEAD AN OBJECT
 
-export default function HobbySearchCard({
-    hobbyInfo,
-}: {
-    hobbyInfo: {
-        _id: string;
-        name: string;
-        description: string;
-        icon: string;
-        owner: string;
-        goalsLength: number;
-        tasksLength: number;
-    };
-}) {
-
+export default function HobbySearchCard(
+    {
+        hobbyInfo,
+        color = "",
+        key = "",
+    }: {
+        hobbyInfo: {
+            _id: string;
+            name: string;
+            description: string;
+            icon: string | null;
+            user: string;
+            goals: number;
+            tasks: number;
+            };
+            color?: string;
+            key: string;
+    },
+) {
     const router = useRouter();
-    const { _id, name, icon, description, owner, goalsLength, tasksLength } =
-        hobbyInfo;
+    const { _id, name, icon, description, user, goals, tasks } = hobbyInfo;
 
     return (
         <TouchableOpacity
@@ -31,26 +35,28 @@ export default function HobbySearchCard({
                 })
             }
         >
-            <View style={styles.card}>
+            <View style={[color === "" ? { backgroundColor: "#ffd1dc" } : { backgroundColor: color }, styles.card]}>
                 <View style={styles.icon}>
-                <Image 
-                        source={{ uri: "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting" }}
-                        style = {styles.image}
-/>
-
+                    <Image
+                        source={{
+                            uri: icon
+                                ? icon
+                                : "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting",
+                        }}
+                        style={styles.image}
+                    />
                 </View>
                 <View style={styles.info}>
                     <View style={styles.goalText}>
                         <Text style={styles.smallText}>goals: </Text>
-                        <Text style={styles.bigText}>{goalsLength}</Text>
+                        <Text style={styles.bigText}>{goals}</Text>
                     </View>
                     <View style={styles.taskText}>
                         <Text style={styles.smallText}>tasks: </Text>
-                        <Text style={styles.bigText}>{tasksLength}</Text>
+                        <Text style={styles.bigText}>{tasks}</Text>
                     </View>
                 </View>
-                <View style={styles.verticalLine}>
-                    </View>
+                <View style={styles.verticalLine}></View>
                 <View style={styles.body}>
                     <Text numberOfLines={1} style={styles.name}>
                         {name}
@@ -60,7 +66,7 @@ export default function HobbySearchCard({
                     </Text>
                     <View style={{ flexDirection: "row" }}>
                         <Text>Created by: </Text>
-                        <Text>{owner}</Text>
+                        <Text>{user}</Text>
                     </View>
                 </View>
             </View>
@@ -75,7 +81,6 @@ const styles = StyleSheet.create({
         padding: 7,
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: "#ffd1dc",
         borderRadius: 37,
         elevation: 2,
     },
@@ -86,9 +91,9 @@ const styles = StyleSheet.create({
         borderRadius: 30,
     },
     image: {
-        width: '100%',
-        height: '100%',
-      },
+        width: "100%",
+        height: "100%",
+    },
     info: {
         paddingLeft: 8,
         height: 60,

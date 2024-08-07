@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { backendLink } from "@/constants/constants";
+import fetchImage from "@/functions/fetchImage";
 
 export default function UserSearchCard({
     userInfo,
@@ -11,14 +12,14 @@ export default function UserSearchCard({
     userInfo: {
         _id: string;
         username: string;
-        icon: string;
+        profileImage: string;
         isFriend: boolean;
     };
     hideTick: boolean;
 }) {
     const router = useRouter();
 
-    const { _id, username, icon, isFriend } = userInfo;
+    const { _id, username, profileImage, isFriend } = userInfo;
     const [friendStatus, setFriendStatus] = useState(isFriend);
 
     const addAsFriend = async () => {
@@ -47,13 +48,13 @@ export default function UserSearchCard({
                 onPress={() =>
                     router.push({
                         pathname: "UserCommunityScreen",
-                        params: { username: username },
+                        params: { userId: _id, isFriend: String(isFriend) },
                     })
                 }
                 style={{ flexDirection: "row" }}
             >
                 <View style={styles.icon}>
-                    <Image source={{ uri: icon }} style={styles.icon} />
+                    <Image source={{ uri: profileImage ? fetchImage(profileImage) : "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541" }} style={styles.icon} />
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoText}>{username}</Text>

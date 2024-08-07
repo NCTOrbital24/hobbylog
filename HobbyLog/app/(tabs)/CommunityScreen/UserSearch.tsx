@@ -19,15 +19,15 @@ export default function UserSearch() {
     const [searchText, setSearchText] = useState("");
     const [userArray, setUserArray] = useState<Array<any>>(testUserArray);
     // * ARRAY THAT IS CHANGED WHEN SEARCHED, AND THEN RENDERED
-    console.log(userArray);
 
     const renderUserSearchResult = (userInfo) => (
         <UserSearchCard userInfo={userInfo} hideTick={false} />
     );
+    console.log(userArray);
 
     const searchUsers = useCallback(async () => {
         if (searchText === "") {
-            setUserArray([]);
+            setUserArray(testUserArray);
         } else {
             try {
                 const response = await fetch(
@@ -39,7 +39,6 @@ export default function UserSearch() {
                     throw new Error("Failed to fetch users");
                 }
                 const data = await response.json();
-                console.log(data);
                 setUserArray(data);
             } catch (err) {
                 console.error(err.message);

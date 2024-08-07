@@ -16,25 +16,47 @@ import { Hobby } from "@/functions/HobbyConstructor";
 import { fetchProfile } from "@/functions/apiUser";
 import Background from "@/assets/images/defaultBackground.png";
 import HobbySearchCard from "@/components/CommunityScreen/HobbySearchCard";
-import { FontAwesome6, AntDesign } from "@expo/vector-icons";
+import { FontAwesome6, AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import fetchImage from "@/functions/fetchImage";
 
 export default function UserCommunityScreen() {
     const router = useRouter();
-    const { username } = useLocalSearchParams();
-    const [user, setUser] = useState(null);
+    const { userId, isFriend } = useLocalSearchParams();
     const [showFriendSucessModal, setShowFriendSuccessModal] = useState(false);
+    const [showFriendRemoveModal, setShowFriendRemoveModal] = useState(false);
+    const [friendButton, showFriendButton] = useState(isFriend === "true" ? true : false);
     const [profile, setProfile] = useState({
         username: "",
         userId: "",
-        hobbies: [
-        ],
+        hobbies: [],
         bio: "",
         profileImage:
-            "https://6.soompi.io/wp-content/uploads/image/a7d15834c0204c7f9d0f04b0b5302acf/dummy.jpeg?s=900x600&e=t",
+            "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
     });
     const goBack = () => {
         router.back();
-    }
+    };
+
+    const removeAsFriend = async () => {
+        try {
+            const response = await fetch(
+                `${backendLink}/api/friend/${userId}/remove`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            if (!response.ok) {
+                throw new Error("Failed to remove friend");
+            }
+            setShowFriendRemoveModal(true);
+            showFriendButton(!friendButton);
+        } catch (error) {
+            console.error("Error removing friend:", error);
+        }
+    };
 
     const addAsFriend = async () => {
         try {
@@ -47,11 +69,11 @@ export default function UserCommunityScreen() {
                     },
                 }
             );
-            console.log(response.status);
             if (!response.ok) {
                 throw new Error("Failed to add friend");
             }
             setShowFriendSuccessModal(true);
+            showFriendButton(!friendButton);
         } catch (error) {
             console.error("Error adding friend:", error);
         }
@@ -59,8 +81,12 @@ export default function UserCommunityScreen() {
 
     const getProfile = async () => {
         try {
-            const result = await fetchProfile(username);
-            setProfile(result);
+            const result = await fetchProfile(userId);
+            setProfile((prevProfile) => ({
+                ...prevProfile,
+                ...result,
+                profileImage: fetchImage(result.profileImage),
+            }));
         } catch (error) {
             console.error("Error fetching profile:", error);
         }
@@ -80,11 +106,19 @@ export default function UserCommunityScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => {
-                        addAsFriend();
-                    }}
+                    onPress={() =>
+                        friendButton ? removeAsFriend() : addAsFriend()
+                    }
                 >
-                    <FontAwesome6 name="add" size={24} color="#e8e8e8" />
+                    {friendButton ? (
+                        <FontAwesome5
+                            name="user-minus"
+                            size={24}
+                            color="#e8e8e8"
+                        />
+                    ) : (
+                        <FontAwesome6 name="add" size={24} color="#e8e8e8" />
+                    )}
                 </TouchableOpacity>
             </View>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -96,15 +130,20 @@ export default function UserCommunityScreen() {
                 </View>
 
                 <View style={styles.inputContainer}>
-                    <View style={styles.box}>
-                        <Text>{profile.username}</Text>
+                    <View
+                        style={{
+                            alignItems: "center",
+                            marginBottom: 20,
+                        }}
+                    >
+                        <Text style={{fontSize: 20, fontWeight: "bold"}}>{profile.username}</Text>
                     </View>
                     <View style={styles.box}>
-                        <Text style={styles.input}>{profile.bio}</Text>
+                        <Text style={styles.input}>{profile.bio === "" ? "This user has no bio." : profile.bio}</Text>
                     </View>
-                    <View style={styles.container}>
+                    <View>
                         {profile.hobbies.map((item, index) => (
-                            <HobbySearchCard hobbyInfo={item} />
+                            <HobbySearchCard hobbyInfo={item} key={item._id} />
                         ))}
                     </View>
                 </View>
@@ -121,6 +160,22 @@ export default function UserCommunityScreen() {
                         <Button
                             title="close"
                             onPress={() => setShowFriendSuccessModal(false)}
+                        />
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showFriendRemoveModal}
+                onRequestClose={() => setShowFriendRemoveModal(false)}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text>Friend removed!</Text>
+                        <Button
+                            title="close"
+                            onPress={() => setShowFriendRemoveModal(false)}
                         />
                     </View>
                 </View>
@@ -164,7 +219,6 @@ const styles = StyleSheet.create({
     },
     header: {
         alignItems: "center",
-        paddingVertical: 15,
     },
     userImg: {
         borderRadius: 50,

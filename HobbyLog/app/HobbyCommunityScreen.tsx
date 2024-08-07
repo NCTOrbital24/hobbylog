@@ -122,19 +122,16 @@ export default function HobbyCommunityScreen() {
                 </TouchableOpacity>
             </View>
             <View style={styles.body}>
-                {/* NINETT YOUR IMAGE PICKER GOES HERE */}
                 <Image
-                    source={{ uri: hobby.icon }}
+                    source={{ uri: hobby.icon === "" ? hobby.icon : "https://static.thenounproject.com/png/3683675-200.png" }}
                     style={{
                         height: 100,
                         width: 100,
-                        backgroundColor: "black",
                         borderRadius: 50,
                         resizeMode: "cover",
                     }}
                 />
-                <Text>Edit Hobby Image</Text>
-                <Text style={styles.inputSet}>{hobby.name}</Text>
+                <Text style={styles.title}>{hobby.name}</Text>
                 <Text style={styles.inputSet}>{hobby.description}</Text>
                 <View style={styles.listContainer}>
                     <Text
@@ -249,6 +246,11 @@ const styles = StyleSheet.create({
         bottom: 0,
         justifyContent: "center",
         alignItems: "center",
+    },
+    title: {
+        marginTop: 4,
+        fontSize: 20,
+        fontWeight: "bold",
     },
     headerText: {
         fontSize: 20,

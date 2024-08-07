@@ -10,7 +10,7 @@ export interface Hobby {
     description: string;
     totalGoals: number;
     goalsCompleted: number;
-    icon: string; //replace local storage with database link when possible
+    profileImage: string; //replace local storage with database link when possible
     goals: Array<Goal>;
     tasks: Array<Task>
 }
@@ -22,7 +22,7 @@ export default function HobbyConstructor(
     name: string,
     description: string,
     goalsCompleted: number,
-    icon: string,
+    profileImage: string,
     goals: Array<Goal>,
     tasks: Array<Task>,
 ): Hobby {
@@ -33,7 +33,7 @@ export default function HobbyConstructor(
             description: description,
             totalGoals: goals.length,
             goalsCompleted: goalsCompleted,
-            icon: icon,
+            profileImage: profileImage,
             goals: goals,
             tasks: tasks,
         };
