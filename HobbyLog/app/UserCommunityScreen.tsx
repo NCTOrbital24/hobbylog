@@ -24,7 +24,9 @@ export default function UserCommunityScreen() {
     const { userId, isFriend } = useLocalSearchParams();
     const [showFriendSucessModal, setShowFriendSuccessModal] = useState(false);
     const [showFriendRemoveModal, setShowFriendRemoveModal] = useState(false);
-    const [friendButton, showFriendButton] = useState(isFriend === "true" ? true : false);
+    const [friendButton, showFriendButton] = useState(
+        isFriend === "true" ? true : false
+    );
     const [profile, setProfile] = useState({
         username: "",
         userId: "",
@@ -85,7 +87,9 @@ export default function UserCommunityScreen() {
             setProfile((prevProfile) => ({
                 ...prevProfile,
                 ...result,
-                profileImage: fetchImage(result.profileImage),
+                profileImage: result.profileImage
+                    ? fetchImage(result.profileImage)
+                    : "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
             }));
         } catch (error) {
             console.error("Error fetching profile:", error);
@@ -125,7 +129,9 @@ export default function UserCommunityScreen() {
                 <View style={styles.header}>
                     <Image
                         style={styles.userImg}
-                        source={{ uri: profile.profileImage }}
+                        source={{
+                            uri: profile.profileImage,
+                        }}
                     />
                 </View>
 
@@ -136,10 +142,30 @@ export default function UserCommunityScreen() {
                             marginBottom: 20,
                         }}
                     >
-                        <Text style={{fontSize: 20, fontWeight: "bold"}}>{profile.username}</Text>
+                        <View style={styles.details}>
+                            <Text style={styles.username}>
+                                Level: {profile.level}
+                            </Text>
+                            <Text
+                                style={{
+                                    fontWeight: "bold",
+                                    fontSize: 20,
+                                }}
+                            >
+                                {profile.username}
+                            </Text>
+
+                            <Text style={styles.username}>
+                                Exp: {profile.exp}
+                            </Text>
+                        </View>
                     </View>
                     <View style={styles.box}>
-                        <Text style={styles.input}>{profile.bio === "" ? "This user has no bio." : profile.bio}</Text>
+                        <Text style={styles.input}>
+                            {profile.bio === ""
+                                ? "This user has no bio."
+                                : profile.bio}
+                        </Text>
                     </View>
                     <View>
                         {profile.hobbies.map((item, index) => (
@@ -218,6 +244,16 @@ const styles = StyleSheet.create({
         position: "relative",
     },
     header: {
+        alignItems: "center",
+    },
+    username: {
+        fontSize: 16,
+    },
+    details: {
+        paddingHorizontal: 20,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
         alignItems: "center",
     },
     userImg: {

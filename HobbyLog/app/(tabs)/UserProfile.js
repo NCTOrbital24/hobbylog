@@ -5,15 +5,10 @@ import {
     StyleSheet,
     ImageBackground,
     Image,
-    Pressable,
-    ScrollView,
     TouchableOpacity,
-    Alert,
-    TextInput,
     Button,
     FlatList,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import Background from "@/assets/images/defaultBackground.png";
 import { uploadProfile, fetchProfile } from "@/functions/apiUser";
 import * as SecureStore from "expo-secure-store";

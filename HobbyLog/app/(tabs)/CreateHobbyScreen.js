@@ -78,7 +78,6 @@ export default function CreateHobbyScreen() {
             );
             return;
         }
-        console.log(image);
 
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,

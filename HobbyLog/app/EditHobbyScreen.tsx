@@ -18,9 +18,8 @@ import { Hobby, EMPTY_HOBBY } from "@/functions/HobbyConstructor";
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 import sortGoalsByDeadline from "@/functions/sortGoalsByDeadline";
-
+import fetchImage from "@/functions/fetchImage";
 import { backendLink } from "@/constants/constants";
-import parseHobby from "@/functions/ParseHobby";
 
 export default function EditHobbyPage() {
     const router = useRouter();
@@ -33,7 +32,7 @@ export default function EditHobbyPage() {
     const [hobby, setHobby] = useState<Hobby | null>(null);
     const [updatedHobby, setUpdatedHobby] = useState<Hobby>(EMPTY_HOBBY);
     const [editable, setEditable] = useState<boolean>(false);
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState<string | null>(null);
     const [goalModalGoal, setGoalModalGoal] = useState();
     const [taskModalTask, setTaskModalTask] = useState();
     const [goalModal, showGoalModal] = useState(false);
@@ -44,7 +43,8 @@ export default function EditHobbyPage() {
     const [journals, setJournals] = useState([]);
     const [newJournalText, setNewJournalText] = useState("");
     const navigateToGoal = (index) => {};
-    const navigateToTask = (index) => {};
+    const navigateToTask = (index) => { };
+    const [imageChanged, setImageChanged] = useState<boolean>(false);
 
     const handleSavePressed = () => {
         updateHobby();
@@ -103,7 +103,8 @@ export default function EditHobbyPage() {
             const updatedHobbyData = parseSingleHobby(hobbyData);
             setHobby(updatedHobbyData);
             setUpdatedHobby(updatedHobbyData);
-            setImage(updatedHobbyData.profilePic);
+            setImage(fetchImage(updatedHobbyData.profileImage));
+            setImageChanged(false);
         } catch (err) {
             console.error("Error fetching hobby", err);
         }
@@ -124,9 +125,10 @@ export default function EditHobbyPage() {
             aspect: [1, 1],
             quality: 1,
         });
-        if (!result.cancelled) {
-            setImage(result.uri);
-            setUpdatedHobby((prev) => ({ ...prev, profilePic: result.uri }));
+        if (!result.canceled && result.assets.length > 0) {
+            setImage(result.assets[0].uri);
+            setUpdatedHobby((prev) => ({ ...prev, profileImage: result.assets[0].uri }));
+            setImageChanged(true);
         }
     };
 
@@ -134,16 +136,24 @@ export default function EditHobbyPage() {
         const newHobby = {
             ...updatedHobby,
             goals: sortGoalsByDeadline(updatedHobby.goals),
-            profilePic: image,
         };
         setUpdatedHobby(newHobby);
         try {
+            const formData = new FormData();
+            formData.append("data", JSON.stringify(newHobby));
+            if (imageChanged) {
+                const uriParts = image.split(".");
+                const fileType = uriParts[uriParts.length - 1];
+                formData.append("profileImage", {
+                    uri: image,
+                    name: `photo.${fileType}`,
+                    type: `image/${fileType}`,
+                });
+            }
+
             const response = await fetch(updateLink, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newHobby),
+                body: formData,
             });
             if (!response.ok) {
                 throw new Error(
@@ -250,13 +260,13 @@ export default function EditHobbyPage() {
                             style={styles.profilePic}
                         />
                     ) : (
-                            <View style={styles.placeholderImage}>
-                                 <Image 
-        source={{ uri: "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting" }}
-                                    style={styles.image}
-                                />
-                                
-                            
+                        <View style={styles.placeholderImage}>
+                            <Image
+                                source={{
+                                    uri: image ? image : "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting",
+                                }}
+                                style={styles.image}
+                            />
                         </View>
                     )}
                 </TouchableOpacity>
@@ -395,7 +405,9 @@ export default function EditHobbyPage() {
                             keyExtractor={(item, index) => index.toString()}
                         />
                     ) : (
-                        <Text style={styles.emptyJournalText}>No tasks yet. Add a new task!</Text>
+                        <Text style={styles.emptyJournalText}>
+                            No tasks yet. Add a new task!
+                        </Text>
                     )}
                     <TouchableOpacity
                         style={styles.goalButton}
@@ -432,173 +444,193 @@ export default function EditHobbyPage() {
                     />
                 </View>
                 <View style={styles.listContainer}>
-                        <Text style={{
+                    <Text
+                        style={{
                             fontSize: 15,
                             marginBottom: 4,
                             fontWeight: "bold",
-                        }}>Journals:</Text>
-                        {journals.length > 0 ? (
-                            <FlatList
-                                style={styles.journalList}
-                                data={journals}
-                                renderItem={({ item }) => (
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            setCurrentJournalEntry(item);
-                                            setJournalModalVisible(true);
-                                        }}
-                                    >
-                                        <View style={styles.journalCard}>
-                                            <Text style={styles.journalText}>
-                                                • {item.text}
-                                            </Text>
-                                            <Text style={styles.journalDate}>
-                                                {new Date(
-                                                    item.timestamp
-                                                ).toLocaleString()}
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                )}
-                                keyExtractor={(item) => item.id.toString()}
-                            />
-                        ) : (
-                            <Text style={styles.emptyJournalText}>
-                                No journal entries yet. Add a new entry!
-                            </Text>
-                        )}
-                        <TouchableOpacity
-                            style={styles.addJournalButton}
-                            onPress={() => setJournalModalVisible(true)}
-                        >
-                            <AntDesign
-                                name="pluscircle"
-                                size={20}
-                                color="black"
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View
-                        style={{
-                            width: "100%",
-                            flexDirection: "row",
-                            justifyContent: "space-evenly",
                         }}
                     >
-                        <TouchableOpacity
-                            onPress={() => handleSavePressed()}
-                            style={styles.saveButton}
-                        >
-                            <Text style={styles.saveText}>Submit</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => showDeleteModal(true)}
-                            style={styles.deleteButton}
-                        >
-                            <Text style={[styles.saveText, { color: "white" }]}>
-                                Delete
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={deleteModal}
-                        onRequestClose={() => showDeleteModal(false)}
-                    >
-                        <View style={styles.modalContainer}>
-                            <View style={styles.deleteModal}>
-                                <Text style={styles.deleteModalText}>
-                                    WARNING: THIS ACTION IS IRREVERSIBLE.
-                                </Text>
-                                <Text style={styles.deleteModalText}>
-                                    Deleted Hobbies cannot be restored.
-                                </Text>
-                                <View
-                                    style={{
-                                        width: "100%",
-                                        flexDirection: "row",
-                                        justifyContent: "space-between",
+                        Journals:
+                    </Text>
+                    {journals.length > 0 ? (
+                        <FlatList
+                            style={styles.journalList}
+                            data={journals}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setCurrentJournalEntry(item);
+                                        setJournalModalVisible(true);
                                     }}
                                 >
-                                    <TouchableOpacity
-                                        style={styles.deleteModalButton}
-                                        onPress={() => handleDeletePressed()}
-                                    >
-                                        <Text
-                                            style={styles.deleteModalButtonText}
-                                        >
-                                            Proceed
+                                    <View style={styles.journalCard}>
+                                        <Text style={styles.journalText}>
+                                            • {item.text}
                                         </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={
-                                            styles.deleteModalButtonTransparent
-                                        }
-                                        onPress={() => showDeleteModal(false)}
-                                    >
-                                        <Text
-                                            style={styles.deleteModalButtonText}
-                                        >
-                                            Cancel
+                                        <Text style={styles.journalDate}>
+                                            {new Date(
+                                                item.timestamp
+                                            ).toLocaleString()}
                                         </Text>
-                                    </TouchableOpacity>
-                                </View>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            keyExtractor={(item) => item.id.toString()}
+                        />
+                    ) : (
+                        <Text style={styles.emptyJournalText}>
+                            No journal entries yet. Add a new entry!
+                        </Text>
+                    )}
+                    <TouchableOpacity
+                        style={styles.addJournalButton}
+                        onPress={() => setJournalModalVisible(true)}
+                    >
+                        <AntDesign name="pluscircle" size={20} color="black" />
+                    </TouchableOpacity>
+                </View>
+                <View
+                    style={{
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                    }}
+                >
+                    <TouchableOpacity
+                        onPress={() => handleSavePressed()}
+                        style={styles.saveButton}
+                    >
+                        <Text style={styles.saveText}>Submit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => showDeleteModal(true)}
+                        style={styles.deleteButton}
+                    >
+                        <Text style={[styles.saveText, { color: "white" }]}>
+                            Delete
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={deleteModal}
+                    onRequestClose={() => showDeleteModal(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.deleteModal}>
+                            <Text style={styles.deleteModalText}>
+                                WARNING: THIS ACTION IS IRREVERSIBLE.
+                            </Text>
+                            <Text style={styles.deleteModalText}>
+                                Deleted Hobbies cannot be restored.
+                            </Text>
+                            <View
+                                style={{
+                                    width: "100%",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                <TouchableOpacity
+                                    style={styles.deleteModalButton}
+                                    onPress={() => handleDeletePressed()}
+                                >
+                                    <Text style={styles.deleteModalButtonText}>
+                                        Proceed
+                                    </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.deleteModalButtonTransparent}
+                                    onPress={() => showDeleteModal(false)}
+                                >
+                                    <Text style={styles.deleteModalButtonText}>
+                                        Cancel
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
-                    </Modal>
-                    <Modal
-    animationType="slide"
-    transparent={true}
-    visible={journalModalVisible}
-    onRequestClose={closeJournalModal}
->
-    <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-            <TextInput
-                style={styles.modalTextInput}
-                value={currentJournalEntry ? currentJournalEntry.text : newJournalText}
-                onChangeText={(text) =>
-                    currentJournalEntry
-                        ? setCurrentJournalEntry({
-                              ...currentJournalEntry,
-                              text,
-                          })
-                        : setNewJournalText(text)
-                }
-                placeholder="Journal entry"
-                multiline={true}
-            />
-            <View style={styles.modalButtonContainer}>
-                <TouchableOpacity
-                    style={[styles.modalButton, styles.yellowButton]}
-                    onPress={() =>
-                        currentJournalEntry
-                            ? updateJournalEntry(currentJournalEntry.id, currentJournalEntry.text)
-                            : addJournalEntry()
-                    }
+                    </View>
+                </Modal>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={journalModalVisible}
+                    onRequestClose={closeJournalModal}
                 >
-                    <Text style={styles.modalButtonText}>Save</Text>
-                </TouchableOpacity>
-                {currentJournalEntry && (
-                    <TouchableOpacity
-                        style={[styles.modalButton, styles.yellowButton]}
-                        onPress={() => deleteJournalEntry(currentJournalEntry.id)}
-                    >
-                        <Text style={styles.modalButtonText}>Delete</Text>
-                    </TouchableOpacity>
-                )}
-                <TouchableOpacity
-                    style={[styles.modalButton, styles.yellowButton]}
-                    onPress={closeJournalModal}
-                >
-                    <Text style={styles.modalButtonText}>Close</Text>
-                </TouchableOpacity>
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <TextInput
+                                style={styles.modalTextInput}
+                                value={
+                                    currentJournalEntry
+                                        ? currentJournalEntry.text
+                                        : newJournalText
+                                }
+                                onChangeText={(text) =>
+                                    currentJournalEntry
+                                        ? setCurrentJournalEntry({
+                                              ...currentJournalEntry,
+                                              text,
+                                          })
+                                        : setNewJournalText(text)
+                                }
+                                placeholder="Journal entry"
+                                multiline={true}
+                            />
+                            <View style={styles.modalButtonContainer}>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.modalButton,
+                                        styles.yellowButton,
+                                    ]}
+                                    onPress={() =>
+                                        currentJournalEntry
+                                            ? updateJournalEntry(
+                                                  currentJournalEntry.id,
+                                                  currentJournalEntry.text
+                                              )
+                                            : addJournalEntry()
+                                    }
+                                >
+                                    <Text style={styles.modalButtonText}>
+                                        Save
+                                    </Text>
+                                </TouchableOpacity>
+                                {currentJournalEntry && (
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.modalButton,
+                                            styles.yellowButton,
+                                        ]}
+                                        onPress={() =>
+                                            deleteJournalEntry(
+                                                currentJournalEntry.id
+                                            )
+                                        }
+                                    >
+                                        <Text style={styles.modalButtonText}>
+                                            Delete
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
+                                <TouchableOpacity
+                                    style={[
+                                        styles.modalButton,
+                                        styles.yellowButton,
+                                    ]}
+                                    onPress={closeJournalModal}
+                                >
+                                    <Text style={styles.modalButtonText}>
+                                        Close
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
             </View>
-        </View>
-    </View>
-</Modal>
-                </View>
         </SafeAreaView>
     );
 }
@@ -776,10 +808,9 @@ const styles = StyleSheet.create({
     },
 
     image: {
-        width: '100%',
-        height: '100%',
-      },
-
+        width: "100%",
+        height: "100%",
+    },
 
     journalContainer: {
         backgroundColor: "#FFFACD", // Light yellow color
@@ -820,7 +851,7 @@ const styles = StyleSheet.create({
     modalButtonContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        width: "100%", 
+        width: "100%",
     },
     saveJournalButton: {
         backgroundColor: "#4CAF50",
@@ -855,7 +886,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         margin: 5,
-        flex: 1,  // Make the buttons take equal space
+        flex: 1, // Make the buttons take equal space
         justifyContent: "center",
         alignItems: "center",
     },
@@ -872,11 +903,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "black",
         textAlign: "center",
-    },modalButton: {
+    },
+    modalButton: {
         borderRadius: 5,
         padding: 10,
         margin: 5,
-        flex: 1,  // Make the buttons take equal space
+        flex: 1, // Make the buttons take equal space
         justifyContent: "center",
         alignItems: "center",
     },
@@ -907,6 +939,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         elevation: 5,
         backgroundColor: "pink",
-        width: "80%", 
+        width: "80%",
     },
 });

@@ -12,7 +12,6 @@ import Background from "@/assets/images/defaultBackground.png";
 import { AntDesign } from "@expo/vector-icons";
 import HobbySearchCard from "@/components/CommunityScreen/HobbySearchCard";
 import { backendLink } from "@/constants/constants";
-import fetchHobbies from "@/functions/FetchHobbies";
 
 export default function HobbySearch() {
     const testHobby = {
@@ -32,7 +31,7 @@ export default function HobbySearch() {
     // * ARRAY THAT IS CHANGED WHEN SEARCHED, AND THEN RENDERED
 
     const renderHobbySearchResult = (hobbyInfo) => (
-        <HobbySearchCard hobbyInfo={hobbyInfo} />
+        <HobbySearchCard hobbyInfo={hobbyInfo} key={hobbyInfo._id} />
     );
 
     const searchHobbies = useCallback(async () => {

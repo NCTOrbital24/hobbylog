@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import fetchImage from "@/functions/fetchImage";
 
 //! THIS CARD IS NOT SUPPOSED TO TAKE A HOBBY, BUT INSTEAD AN OBJECT
 
@@ -14,7 +15,7 @@ export default function HobbySearchCard(
             _id: string;
             name: string;
             description: string;
-            icon: string | null;
+            profileImage: string | null;
             user: string;
             goals: number;
             tasks: number;
@@ -24,7 +25,7 @@ export default function HobbySearchCard(
     },
 ) {
     const router = useRouter();
-    const { _id, name, icon, description, user, goals, tasks } = hobbyInfo;
+    const { _id, name, profileImage, description, user, goals, tasks } = hobbyInfo;
 
     return (
         <TouchableOpacity
@@ -39,8 +40,8 @@ export default function HobbySearchCard(
                 <View style={styles.icon}>
                     <Image
                         source={{
-                            uri: icon
-                                ? icon
+                            uri: profileImage
+                                ? fetchImage(profileImage)
                                 : "https://images.squarespace-cdn.com/content/v1/5c6e2dad94d71a1ea569fca0/1624344400741-2VUMN1MRI6UD50VFLYXG/Painting",
                         }}
                         style={styles.image}
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
     image: {
         width: "100%",
         height: "100%",
+        borderRadius: 30,
     },
     info: {
         paddingLeft: 8,
