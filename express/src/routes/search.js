@@ -34,6 +34,8 @@ router.get("/hobbies", async (req, res) => {
         }).populate('user', 'username').lean();
         const mutHobbies = hobbies.map(hobby => ({
             name: hobby.name,
+            description: hobby.description,
+            profileImage: hobby.profileImage,
             goals: hobby.goals.length,
             tasks: hobby.tasks.length,
             user: hobby.user.username,

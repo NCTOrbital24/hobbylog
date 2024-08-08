@@ -38,7 +38,6 @@ const upload = multer({
 router.post('/', upload.single('profileImage'), async (req, res) => {
     try {
         const { username, bio } = req.body;
-        console.log("username:", username, "bio:", bio);
         const profileImage = req.file ? `${req.file.filename}` : null;
 
         if (username === "" && bio === "" && !profileImage) {
@@ -53,7 +52,6 @@ router.post('/', upload.single('profileImage'), async (req, res) => {
         user.bio = bio;
         if (profileImage) {
             const oldLink = `./uploads/${user.profileImage}`
-            console.log(oldLink);
             fs.unlink(oldLink, (err) => {
                 if (err) {
                     console.error("Error deleting old image", err);

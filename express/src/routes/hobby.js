@@ -183,7 +183,6 @@ router.post("/:hobbyId/tasks/addAll", isAuthenticated, addAllTasks);
 router.post("/create", isAuthenticated, upload.single('hobbyImage'), async (req, res) => {
     const { hobbyName, hobbyDescription, goals, tasks } = JSON.parse(req.body.data);
     const hobbyImage = req.file ? `${req.file.filename}` : null;
-    console.log("hobby image:", hobbyImage);
 
     try {
         const user = req.user;
@@ -203,7 +202,6 @@ router.post("/create", isAuthenticated, upload.single('hobbyImage'), async (req,
 
         if (hobbyImage) {
             newHobby.profileImage = hobbyImage;
-            console.log("NEW LINK:", newHobby.profileImage);
         }
 
         const savedHobby = await newHobby.save();
@@ -269,11 +267,13 @@ router.get("/:hobbyId/get", async (req, res) => {
     }
 });
 
-router.put("/:hobbyId/update", isAuthenticated, async (req, res) => {
+router.put("/:hobbyId/update", isAuthenticated, upload.single('profileImage'), async (req, res) => {
     const hobbyId = req.params.hobbyId; 
-    const { name, description, goals, tasks } = req.body;
 
     try {
+        const { name, description, goals, tasks } = JSON.parse(req.body.data);
+        const profileImage = req.file ? `${req.file.filename}` : null;
+        console.log("hobby profileImage:", profileImage);
         // Find the hobby by ID
         const hobby = await Hobby.findById(hobbyId);
 
@@ -339,11 +339,21 @@ router.put("/:hobbyId/update", isAuthenticated, async (req, res) => {
             updatedTasks.find((task) => task._id.equals(taskId))
         );
 
+        if (profileImage) {
+            if (hobby.profileImage) {
+                const oldLink = `./uploads/${hobby.profileImage}`;
+                fs.unlink(oldLink, (err) => {
+                    if (err) {
+                        console.error("Error deleting old image", err);
+                    }
+                });
+            }
+            hobby.profileImage = profileImage;
+        }
+
         // Save updated hobby
         await hobby.save();
         const sortedHobbies = sortHobbiesByClosestDeadline(user._id, true);
-
-        console.log("UPDATING SUCCESSFUL!");
 
         res.status(200).json({ hobby });
     } catch (err) {
